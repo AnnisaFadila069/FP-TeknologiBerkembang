@@ -9,7 +9,7 @@ Buka terminal
 2. cd .\FP-TeknologiBerkembang\
 3. code .
 
-buka terminal di vsc:
+lihat branch dulu, project masuk ke branch mana, buka terminal di vsc:
 git branch <nama branch>
 
 (mulai ngerjain dengan kode masing2)
