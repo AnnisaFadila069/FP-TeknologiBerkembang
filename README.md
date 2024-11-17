@@ -13,15 +13,13 @@ lihat branch dulu, project masuk ke branch mana, buka terminal di vsc:
 git branch <nama branch>
 
 (mulai ngerjain dengan kode masing2)
-! Setiap screen buat file baru .dart di folder lib
-! tambahan gambar local bisa dimasukkan ke folder Images
-! Semua file atau aset yang digunakan harus didaftarkan di dalam file pubspec.yaml
+- ! Setiap screen buat file baru .dart di folder lib
+- ! tambahan gambar local bisa dimasukkan ke folder Images
+- ! Semua file atau aset yang digunakan harus didaftarkan di dalam file pubspec.yaml
 
 Masukkan hasil ke github:
-git add .
-
-git commit -m "<isi komen perubahan>"
-
-git push origin <nama_branch>
+1. git add .
+2. git commit -m "<isi komen perubahan>"
+3. git push origin <nama_branch>
 
 
