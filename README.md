@@ -1,20 +1,22 @@
-<<<<<<< HEAD
 # FP-TeknologiBerkembang
-=======
-# fp_kelompok3
-
-A new Flutter project.
 
 ## Getting Started
+Step by step mengerjakan project:
+Buka terminal
 
-This project is a starting point for a Flutter application.
+git clone <https>
 
-A few resources to get you started if this is your first Flutter project:
+pindah directory --> cd <nama_folder>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+buka terminal di vsc:
+git branch <nama branch>
+(mulai ngerjain dengan kode masing2)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
->>>>>>> 0f49fc5 (Template flutter awal)
+Masukkan ke github:
+git add .
+
+git commit -m "<isi komen perubahan>"
+
+git push origin <nama_branch>
+
+
