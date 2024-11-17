@@ -10,7 +10,7 @@ Buka terminal
 3. code .
 
 lihat branch dulu, project masuk ke branch mana, buka terminal di vsc:
-1. git branch <nama branch>
+1. git branch nama_branch 
 
 (mulai ngerjain dengan kode masing2)
 - ! Setiap screen buat file baru .dart di folder lib
