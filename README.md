@@ -2,6 +2,7 @@
 Pembuatan aplikasi management buku.
 
 ## Getting Started
+Lihat tab bagian project buat melihat masing-masing bagiannya
 Step by step mengerjakan project:
 Buka terminal
 1. git clone https://github.com/AnnisaFadila069/FP-TeknologiBerkembang.git
