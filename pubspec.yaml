@@ -20,10 +20,27 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/bumi_manusia.jpg
-    - assets/gadis_pantai.jpg
-    - assets/mangir.jpg
-    - assets/anak_semua_bangsa.jpg
-    - assets/arus_balik.jpg
-    - assets/jejak_langkah.jpg
+  image:
+    - image/bumi_manusia.jpg
+    - image/gadis_pantai.jpg
+    - image/mangir.jpg
+    - image/anak_semua_bangsa.jpg
+    - image/arus_balik.jpg
+    - image/jejak_langkah.jpg
+    - image/bumi_manusia_cover.jpg
+    - image/logo_bookmate.png
+    - image/filosofi_teras_cover.jpg
+    - image/gadis_pantai_cover.jpg
+    - image/hujan_cover.jpg
+    - image/laskar_pelangi_cover.jpg
+    - image/laut_bercerita_cover.jpg
+    - image/mangir_cover.jpg
+    - image/negara_5_menara_cover.jpg
+    - image/rumah_kaca_cover.jpg
+    - image/tentang_kamu_cover.jpg
+    - image/tujuh_kelana_cover.jpg
+    - image/sihir_perempuan_cover.jpg
+    - image/cantik_itu_luka_cover.jpg
+    - image/anak_semua_bangsa_cover.jpg
+    - image/gadis_kretek_cover.jpg
+    - image/sang_pemimpi_cover.jpg

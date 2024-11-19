@@ -23,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Row(
           children: [
             Image(
-              image: AssetImage('assets/logo_bookmate.png'),
+              image: AssetImage('image/logo_bookmate.png'),
               height: 24,  // Sesuaikan ukuran logo sesuai kebutuhan
             ),
             SizedBox(width: 8),
@@ -93,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     image: const DecorationImage(
-                                      image: AssetImage('assets/bumi_manusia.jpg'),
+                                      image: AssetImage('image/bumi_manusia.jpg'),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -153,22 +153,22 @@ class _HomeScreenState extends State<HomeScreen> {
               // Categories
               const SectionTitle(title: 'Horror'),
               const HorizontalBookList(books: [
-                {'title': 'Bumi Manusia', 'image': 'assets/bumi_manusia.jpg'},
-                {'title': 'Gadis Pantai', 'image': 'assets/gadis_pantai.jpg'},
-                {'title': 'Mangir', 'image': 'assets/mangir.jpg'},
-                {'title': 'Bumi Manusia', 'image': 'assets/bumi_manusia.jpg'},
-                {'title': 'Gadis Pantai', 'image': 'assets/gadis_pantai.jpg'},
-                {'title': 'Mangir', 'image': 'assets/mangir.jpg'},
+                {'title': 'Bumi Manusia', 'image': 'image/bumi_manusia.jpg'},
+                {'title': 'Gadis Pantai', 'image': 'image/gadis_pantai.jpg'},
+                {'title': 'Mangir', 'image': 'image/mangir.jpg'},
+                {'title': 'Bumi Manusia', 'image': 'image/bumi_manusia.jpg'},
+                {'title': 'Gadis Pantai', 'image': 'image/gadis_pantai.jpg'},
+                {'title': 'Mangir', 'image': 'image/mangir.jpg'},
               ]),
               const SizedBox(height: 16),
               const SectionTitle(title: 'Historical Fiction'),
               const HorizontalBookList(books: [
-                {'title': 'Jejak Langkah', 'image': 'assets/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'assets/anak_semua_bangsa.jpg'},
-                {'title': 'Arus Balik', 'image': 'assets/arus_balik.jpg'},
-                {'title': 'Jejak Langkah', 'image': 'assets/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'assets/anak_semua_bangsa.jpg'},
-                {'title': 'Arus Balik', 'image': 'assets/arus_balik.jpg'},
+                {'title': 'Jejak Langkah', 'image': 'image/jejak_langkah.jpg'},
+                {'title': 'Anak Semua Bangsa', 'image': 'image/anak_semua_bangsa.jpg'},
+                {'title': 'Arus Balik', 'image': 'image/arus_balik.jpg'},
+                {'title': 'Jejak Langkah', 'image': 'image/jejak_langkah.jpg'},
+                {'title': 'Anak Semua Bangsa', 'image': 'image/anak_semua_bangsa.jpg'},
+                {'title': 'Arus Balik', 'image': 'image/arus_balik.jpg'},
               ]),
             ],
           ),
