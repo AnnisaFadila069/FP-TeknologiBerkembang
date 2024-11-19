@@ -17,24 +17,33 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F5EE),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF9F5EE),
-        elevation: 0,
-        title: const Row(
-          children: [
-            Image(
-              image: AssetImage('assets/logo_bookmate.png'),
-              height: 24,  // Sesuaikan ukuran logo sesuai kebutuhan
+appBar: AppBar(
+  backgroundColor: const Color(0xffff5f5eb), // Warna latar AppBar
+  elevation: 0, // Hilangkan bayangan
+  title: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Image.asset(
+            'assets/logo_bookmate.png',
+            width: 48, // Lebar logo
+            height: 48, // Tinggi logo
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            'BookMate',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF6D4C41), // Warna teks
             ),
-            SizedBox(width: 8),
-            Text(
-              'BookMate',
-              style: TextStyle(color: Colors.brown, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-
+    ],
+  ),
+),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -173,15 +182,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-        ],
-        selectedItemColor: Colors.brown,
-        unselectedItemColor: Colors.black54,
-        backgroundColor: const Color(0xFFF9F5EE),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
