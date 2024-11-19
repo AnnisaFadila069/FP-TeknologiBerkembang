@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // For Be Vietnam Pro font
 import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // For page indicator
+import 'detailpagescreen.dart';
 import 'homescreen.dart';
 
 void main() {
@@ -21,3 +22,4 @@ class BookMateApp extends StatelessWidget {
     );
   }
 }
+

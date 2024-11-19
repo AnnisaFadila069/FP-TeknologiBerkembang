@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // For Be Vietnam Pro font
 import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // For page indicator
+import 'detailpagescreen.dart';
+import 'addpagescreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,7 +22,10 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         title: const Row(
           children: [
-            Icon(Icons.book, color: Colors.brown),
+            Image(
+              image: AssetImage('assets/logo_bookmate.png'),
+              height: 24,  // Sesuaikan ukuran logo sesuai kebutuhan
+            ),
             SizedBox(width: 8),
             Text(
               'BookMate',
@@ -30,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -147,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // Categories
               const SectionTitle(title: 'Horror'),
-              HorizontalBookList(books: [
+              const HorizontalBookList(books: [
                 {'title': 'Bumi Manusia', 'image': 'assets/bumi_manusia.jpg'},
                 {'title': 'Gadis Pantai', 'image': 'assets/gadis_pantai.jpg'},
                 {'title': 'Mangir', 'image': 'assets/mangir.jpg'},
@@ -157,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ]),
               const SizedBox(height: 16),
               const SectionTitle(title: 'Historical Fiction'),
-              HorizontalBookList(books: [
+              const HorizontalBookList(books: [
                 {'title': 'Jejak Langkah', 'image': 'assets/jejak_langkah.jpg'},
                 {'title': 'Anak Semua Bangsa', 'image': 'assets/anak_semua_bangsa.jpg'},
                 {'title': 'Arus Balik', 'image': 'assets/arus_balik.jpg'},
@@ -277,45 +282,6 @@ class HorizontalBookList extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class AddPageScreen extends StatelessWidget {
-  const AddPageScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.brown,
-        title: const Text('Add New Book'),
-      ),
-      body: const Center(
-        child: Text('Add Page Content Here'),
-      ),
-    );
-  }
-}
-
-class DetailPageScreen extends StatelessWidget {
-  final String bookTitle;
-
-  const DetailPageScreen({super.key, required this.bookTitle});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.brown,
-        title: Text(bookTitle),
-      ),
-      body: Center(
-        child: Text(
-          'Detail informasi untuk buku: $bookTitle',
-          style: const TextStyle(fontSize: 18),
-        ),
       ),
     );
   }
