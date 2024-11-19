@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'BookMate',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
@@ -65,13 +66,6 @@ class HomePage extends StatelessWidget {
       body: Row(
         children: [],
       ),
-      debugShowCheckedModeBanner: false,
-      title: 'Book Detail App',
-      theme: ThemeData(
-        primarySwatch: Colors.brown,
-      ),
-      home: const BookDetailPage(), // Menggunakan halaman BookDetailPage
-
     );
   }
 }
