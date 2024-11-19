@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'add_page.dart';
+import 'detail_edit.dart'; // Sesuaikan dengan nama file Anda
 
 void main() {
   runApp(const MyApp());
@@ -64,6 +65,13 @@ class HomePage extends StatelessWidget {
       body: Row(
         children: [],
       ),
+      debugShowCheckedModeBanner: false,
+      title: 'Book Detail App',
+      theme: ThemeData(
+        primarySwatch: Colors.brown,
+      ),
+      home: const BookDetailPage(), // Menggunakan halaman BookDetailPage
+
     );
   }
 }
