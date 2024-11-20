@@ -26,7 +26,7 @@ appBar: AppBar(
       Row(
         children: [
           Image.asset(
-            'assets/logo_bookmate.png',
+            'Image/logo_bookmate.png',
             width: 48, // Lebar logo
             height: 48, // Tinggi logo
           ),
@@ -102,7 +102,7 @@ appBar: AppBar(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     image: const DecorationImage(
-                                      image: AssetImage('assets/bumi_manusia.jpg'),
+                                      image: AssetImage('Image/bumi_manusia.jpg'),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -162,22 +162,22 @@ appBar: AppBar(
               // Categories
               const SectionTitle(title: 'Horror'),
               const HorizontalBookList(books: [
-                {'title': 'Bumi Manusia', 'image': 'assets/bumi_manusia.jpg'},
-                {'title': 'Gadis Pantai', 'image': 'assets/gadis_pantai.jpg'},
-                {'title': 'Mangir', 'image': 'assets/mangir.jpg'},
-                {'title': 'Bumi Manusia', 'image': 'assets/bumi_manusia.jpg'},
-                {'title': 'Gadis Pantai', 'image': 'assets/gadis_pantai.jpg'},
-                {'title': 'Mangir', 'image': 'assets/mangir.jpg'},
+                {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
+                {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
+                {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
+                {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
+                {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
+                {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
               ]),
               const SizedBox(height: 16),
               const SectionTitle(title: 'Historical Fiction'),
               const HorizontalBookList(books: [
-                {'title': 'Jejak Langkah', 'image': 'assets/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'assets/anak_semua_bangsa.jpg'},
-                {'title': 'Arus Balik', 'image': 'assets/arus_balik.jpg'},
-                {'title': 'Jejak Langkah', 'image': 'assets/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'assets/anak_semua_bangsa.jpg'},
-                {'title': 'Arus Balik', 'image': 'assets/arus_balik.jpg'},
+                {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
+                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa.jpg'},
+                {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
+                {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
+                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa.jpg'},
+                {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
               ]),
             ],
           ),

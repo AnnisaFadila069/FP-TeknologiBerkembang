@@ -36,7 +36,7 @@ class _BookMateHomeState extends State<HistoryPage>
       Row(
         children: [
           Image.asset(
-            'assets/logo_bookmate.png',
+            'Image/logo_bookmate.png',
             width: 48, // Lebar logo
             height: 48, // Tinggi logo
           ),
@@ -126,12 +126,12 @@ Widget buildBookGrid() {
     'Tujuh Kelana'
   ];
   List<String> bookCovers = [
-    'assets/gadis_pantai_cover.jpg',
-    'assets/laut_bercerita_cover.jpg',
-    'assets/rumah_kaca_cover.jpg',
-    'assets/laskar_pelangi_cover.jpg',
-    'assets/hujan_cover.jpg',
-    'assets/tujuh_kelana_cover.jpg',
+    'Image/gadis_pantai_cover.jpg',
+    'Image/laut_bercerita_cover.jpg',
+    'Image/rumah_kaca_cover.jpg',
+    'Image/laskar_pelangi_cover.jpg',
+    'Image/hujan_cover.jpg',
+    'Image/tujuh_kelana_cover.jpg',
   ];
 
   return Padding(
@@ -202,12 +202,12 @@ Widget buildUnreadGrid() {
     'Sihir Perempuan'
   ];
  List<String> unreadCovers = [
-    'assets/bumi_manusia_cover.jpg',
-    'assets/mangir_cover.jpg',
-    'assets/filosofi_teras_cover.jpg',
-    'assets/tentang_kamu_cover.jpg',
-    'assets/negara_5_menara_cover.jpg',
-    'assets/sihir_perempuan_cover.jpg',
+    'Image/bumi_manusia_cover.jpg',
+    'Image/mangir_cover.jpg',
+    'Image/filosofi_teras_cover.jpg',
+    'Image/tentang_kamu_cover.jpg',
+    'Image/negara_5_menara_cover.jpg',
+    'Image/sihir_perempuan_cover.jpg',
   ];
 
   return Padding(
@@ -273,22 +273,22 @@ Widget buildFavoriteList() {
     {
       'title': 'Anak Semua Bangsa',
       'description': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'cover': 'assets/anak_semua_bangsa_cover.jpg',
+      'cover': 'Image/anak_semua_bangsa_cover.jpg',
     },
     {
       'title': 'Cantik Itu Luka',
       'description': 'In tempus egestas velit sed maximus vehicula.',
-      'cover': 'assets/cantik_itu_luka_cover.jpg',
+      'cover': 'Image/cantik_itu_luka_cover.jpg',
     },
     {
       'title': 'Sang Pemimpi',
       'description': 'ini deskripsi dari novel sang pemimpi, cm nyoba.',
-      'cover': 'assets/sang_pemimpi_cover.jpg',
+      'cover': 'Image/sang_pemimpi_cover.jpg',
     },
     {
       'title': 'Gadis Kretek',
       'description': 'ini deskripsi dari gadis kretek yang dijadiin film.',
-      'cover': 'assets/gadis_kretek_cover.jpg',
+      'cover': 'Image/gadis_kretek_cover.jpg',
     },
   ];
 
