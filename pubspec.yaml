@@ -25,7 +25,6 @@ flutter:
     - Image/bumi_manusia.jpg
     - Image/gadis_pantai.jpg
     - Image/mangir.jpg
-    - Image/anak_semua_bangsa_cover.jpg
     - Image/Logo BookMate.png
     - Image/arus_balik.jpg
     - Image/jejak_langkah.jpg
@@ -43,6 +42,7 @@ flutter:
     - Image/tujuh_kelana_cover.jpg
     - Image/sihir_perempuan_cover.jpg
     - Image/cantik_itu_luka_cover.jpg
+    - Image/anak_semua_bangsa.jpg
     - Image/anak_semua_bangsa_cover.jpg
     - Image/gadis_kretek_cover.jpg
     - Image/sang_pemimpi_cover.jpg

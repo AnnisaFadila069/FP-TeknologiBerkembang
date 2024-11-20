@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'custom_widgets.dart';
 
 class BookDetailPage extends StatefulWidget {
-  const BookDetailPage({super.key});
+  final String bookTitle;
+  final String bookImagePath;
+
+  const BookDetailPage({super.key, required this.bookTitle, required this.bookImagePath});
 
   @override
   State<BookDetailPage> createState() => _BookDetailPageState();
@@ -12,15 +15,30 @@ class _BookDetailPageState extends State<BookDetailPage> {
   String selectedCategory = 'Fiction';
   String selectedStatus = 'Haven’t Read';
   bool isEditing = false;
-  String imagePath = '';
+  late String imagePath;
 
-  final TextEditingController titleController =
-      TextEditingController(text: "Bumi Manusia");
+  late TextEditingController titleController;
   final TextEditingController authorController =
       TextEditingController(text: "Nama Author");
   final TextEditingController publisherController =
       TextEditingController(text: "xxxxxxx");
   final TextEditingController descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    titleController = TextEditingController(text: widget.bookTitle);
+    imagePath = widget.bookImagePath;
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    authorController.dispose();
+    publisherController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,8 +83,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                         borderRadius: BorderRadius.circular(8),
                         image: imagePath.isNotEmpty
                             ? DecorationImage(
-                                image: AssetImage('image/bumi_manusia.jpg'),
-                                fit: BoxFit.cover, // Opsional, untuk mengatur cara gambar menyesuaikan ukuran container
+                                image: AssetImage(imagePath),
+                                fit: BoxFit.cover,
                               )
                             : null,
                       ),
@@ -303,7 +321,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 // Hapus buku
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey.shade300, // Warna tombol DELETE
+                backgroundColor: Colors.grey.shade300,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -322,7 +340,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 // Save perubahan
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC1B6A3), // Warna tombol SAVE
+                backgroundColor: const Color(0xFFC1B6A3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // For page indicator
-import 'detailpagescreen.dart';
-import 'addpagescreen.dart';
+import 'package:fp_kelompok3/add_page.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'detail_edit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,33 +17,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F5EE),
-appBar: AppBar(
-  backgroundColor: const Color(0xffff5f5eb), // Warna latar AppBar
-  elevation: 0, // Hilangkan bayangan
-  title: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Image.asset(
-            'Image/logo_bookmate.png',
-            width: 48, // Lebar logo
-            height: 48, // Tinggi logo
-          ),
-          const SizedBox(width: 8),
-          const Text(
-            'BookMate',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF6D4C41), // Warna teks
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF5F5EB),
+        elevation: 0,
+        title: Row(
+          children: [
+            Image.asset(
+              'Image/logo_bookmate.png',
+              width: 48,
+              height: 48,
             ),
-          ),
-        ],
+            const SizedBox(width: 8),
+            const Text(
+              'BookMate',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF6D4C41),
+              ),
+            ),
+          ],
+        ),
       ),
-    ],
-  ),
-),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -72,15 +67,22 @@ appBar: AppBar(
                 height: 220,
                 child: PageView.builder(
                   controller: _pageController,
-                  itemCount: 3, // Number of items
+                  itemCount: 3, // Number of items in the PageView
                   itemBuilder: (context, index) {
+                    final featuredBooks = [
+                      {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
+                      {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
+                      {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
+                    ];
+
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const DetailPageScreen(
-                              bookTitle: 'Bumi Manusia',
+                            builder: (context) => BookDetailPage(
+                              bookTitle: featuredBooks[index]['title']!,
+                              bookImagePath: featuredBooks[index]['image']!,
                             ),
                           ),
                         );
@@ -101,27 +103,27 @@ appBar: AppBar(
                                   width: 100,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
-                                    image: const DecorationImage(
-                                      image: AssetImage('Image/bumi_manusia.jpg'),
+                                    image: DecorationImage(
+                                      image: AssetImage(featuredBooks[index]['image']!),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
                                 const SizedBox(width: 16),
-                                const Expanded(
+                                Expanded(
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'Bumi Manusia',
-                                        style: TextStyle(
+                                        featuredBooks[index]['title']!,
+                                        style: const TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.brown),
                                       ),
-                                      SizedBox(height: 8),
-                                      Text(
+                                      const SizedBox(height: 8),
+                                      const Text(
                                         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tempus egestas velit.',
                                         style: TextStyle(
                                           fontSize: 14,
@@ -173,10 +175,10 @@ appBar: AppBar(
               const SectionTitle(title: 'Historical Fiction'),
               const HorizontalBookList(books: [
                 {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa.jpg'},
+                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa_cover.jpg'},
                 {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
                 {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa.jpg'},
+                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa_cover.jpg'},
                 {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
               ]),
             ],
@@ -187,7 +189,7 @@ appBar: AppBar(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddPageScreen()),
+            MaterialPageRoute(builder: (context) => const AddPage()),
           );
         },
         backgroundColor: Colors.brown,
@@ -226,7 +228,7 @@ class HorizontalBookList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200, // Pastikan cukup untuk gambar dan teks
+      height: 200,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: books.length,
@@ -236,8 +238,9 @@ class HorizontalBookList extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DetailPageScreen(
+                  builder: (context) => BookDetailPage(
                     bookTitle: books[index]['title']!,
+                    bookImagePath: books[index]['image']!,
                   ),
                 ),
               );
@@ -245,10 +248,9 @@ class HorizontalBookList extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: SizedBox(
-                width: 100, // Lebar tetap
+                width: 100,
                 child: Column(
                   children: [
-                    // Buku tetap di atas
                     Container(
                       height: 120,
                       width: 80,
@@ -261,9 +263,8 @@ class HorizontalBookList extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    // Bungkus judul, tanpa memengaruhi posisi buku
                     SizedBox(
-                      height: 40, // Tetapkan tinggi tetap untuk teks
+                      height: 40,
                       child: Text(
                         books[index]['title']!,
                         textAlign: TextAlign.center,
@@ -271,7 +272,7 @@ class HorizontalBookList extends StatelessWidget {
                           fontSize: 14,
                           color: Colors.brown,
                         ),
-                        maxLines: 2, // Bungkus hingga 2 baris
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         softWrap: true,
                       ),
