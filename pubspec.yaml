@@ -20,11 +20,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # To add assets to your application, add an assets section, like this:
   assets:
     - Image/bumi_manusia.jpg
     - Image/gadis_pantai.jpg
     - Image/mangir.jpg
     - Image/anak_semua_bangsa_cover.jpg
+    - Image/Logo BookMate.png
     - Image/arus_balik.jpg
     - Image/jejak_langkah.jpg
     - Image/bumi_manusia_cover.jpg
@@ -44,3 +46,39 @@ flutter:
     - Image/anak_semua_bangsa_cover.jpg
     - Image/gadis_kretek_cover.jpg
     - Image/sang_pemimpi_cover.jpg
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: BeVietnamPro
+      fonts:
+        - asset: Fonts/BeVietnamPro-Black.ttf
+        - asset: Fonts/BeVietnamPro-BlackItalic.ttf
+        - asset: Fonts/BeVietnamPro-Bold.ttf
+        - asset: Fonts/BeVietnamPro-BoldItalic.ttf
+        - asset: Fonts/BeVietnamPro-ExtraBold.ttf
+        - asset: Fonts/BeVietnamPro-ExtraBoldItalic.ttf
+        - asset: Fonts/BeVietnamPro-ExtraLight.ttf
+        - asset: Fonts/BeVietnamPro-ExtraLightItalic.ttf
+        - asset: Fonts/BeVietnamPro-Italic.ttf
+        - asset: Fonts/BeVietnamPro-Light.ttf
+        - asset: Fonts/BeVietnamPro-LightItalic.ttf
+        - asset: Fonts/BeVietnamPro-Medium.ttf
+        - asset: Fonts/BeVietnamPro-MediumItalic.ttf
+        - asset: Fonts/BeVietnamPro-Regular.ttf
+        - asset: Fonts/BeVietnamPro-SemiBold.ttf
+        - asset: Fonts/BeVietnamPro-SemiBoldItalic.ttf
+        - asset: Fonts/BeVietnamPro-Thin.ttf
+        - asset: Fonts/BeVietnamPro-ThinItalic.ttf
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
