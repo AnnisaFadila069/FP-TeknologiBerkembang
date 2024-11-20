@@ -12,7 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BookMate',
+      debugShowCheckedModeBanner: false, // Pindahkan ke sini
+      title: 'BookMate', // Pindahkan ke sini
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
         useMaterial3: true,
@@ -28,14 +29,14 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5EB),
+      backgroundColor: const Color(0xFFF5F5EB),
       appBar: AppBar(
-        backgroundColor: Color(0xFFF5F5EB),
+        backgroundColor: const Color(0xFFF5F5EB),
         elevation: 0,
         title: Row(
           children: [
             Image.asset(
-              'Image/logo BookMate.png', 
+              'Image/logo BookMate.png', // Sesuaikan dengan nama folder sebenarnya
               height: 42,
             ),
             const SizedBox(width: 8),
@@ -62,16 +63,12 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: Row(
-        children: [],
+      body: const Center(
+        child: Text(
+          'Welcome to BookMate!',
+          style: TextStyle(fontSize: 20, fontFamily: 'BeVietnamPro'),
+        ),
       ),
-      debugShowCheckedModeBanner: false,
-      title: 'Book Detail App',
-      theme: ThemeData(
-        primarySwatch: Colors.brown,
-      ),
-      home: const BookDetailPage(), // Menggunakan halaman BookDetailPage
-
     );
   }
 }
