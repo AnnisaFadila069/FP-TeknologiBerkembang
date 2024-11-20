@@ -76,7 +76,7 @@ class _AddPageState extends State<AddPage> {
               // Dropdown untuk Status
               CustomDropdown(
                 label: 'Status',
-                items: ['Selesai', 'Sedang Dibaca', 'Sudah Dibaca'],
+                items: ['Reading','Have Not Read', 'Finished'],
                 value: selectedStatus,
                 onChanged: (value) {
                   setState(() {
