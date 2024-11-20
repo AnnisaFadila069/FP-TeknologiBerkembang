@@ -20,27 +20,66 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  image:
-    - image/bumi_manusia.jpg
-    - image/gadis_pantai.jpg
-    - image/mangir.jpg
-    - image/anak_semua_bangsa.jpg
-    - image/arus_balik.jpg
-    - image/jejak_langkah.jpg
-    - image/bumi_manusia_cover.jpg
-    - image/logo_bookmate.png
-    - image/filosofi_teras_cover.jpg
-    - image/gadis_pantai_cover.jpg
-    - image/hujan_cover.jpg
-    - image/laskar_pelangi_cover.jpg
-    - image/laut_bercerita_cover.jpg
-    - image/mangir_cover.jpg
-    - image/negara_5_menara_cover.jpg
-    - image/rumah_kaca_cover.jpg
-    - image/tentang_kamu_cover.jpg
-    - image/tujuh_kelana_cover.jpg
-    - image/sihir_perempuan_cover.jpg
-    - image/cantik_itu_luka_cover.jpg
-    - image/anak_semua_bangsa_cover.jpg
-    - image/gadis_kretek_cover.jpg
-    - image/sang_pemimpi_cover.jpg
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - Image/bumi_manusia.jpg
+    - Image/Logo BookMate.png
+    - Image/bumi_manusia.jpg
+    - Image/gadis_pantai.jpg
+    - Image/mangir.jpg
+    - Image/anak_semua_bangsa.jpg
+    - Image/arus_balik.jpg
+    - Image/jejak_langkah.jpg
+    - Image/bumi_manusia_cover.jpg
+    - Image/logo_bookmate.png
+    - Image/filosofi_teras_cover.jpg
+    - Image/gadis_pantai_cover.jpg
+    - Image/hujan_cover.jpg
+    - Image/laskar_pelangi_cover.jpg
+    - Image/laut_bercerita_cover.jpg
+    - Image/mangir_cover.jpg
+    - Image/negara_5_menara_cover.jpg
+    - Image/rumah_kaca_cover.jpg
+    - Image/tentang_kamu_cover.jpg
+    - Image/tujuh_kelana_cover.jpg
+    - Image/sihir_perempuan_cover.jpg
+    - Image/cantik_itu_luka_cover.jpg
+    - Image/anak_semua_bangsa_cover.jpg
+    - Image/gadis_kretek_cover.jpg
+    - Image/sang_pemimpi_cover.jpg
+
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/to/resolution-aware-images
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/to/asset-from-package
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: BeVietnamPro
+      fonts:
+        - asset: Fonts/BeVietnamPro-Black.ttf
+        - asset: Fonts/BeVietnamPro-BlackItalic.ttf
+        - asset: Fonts/BeVietnamPro-Bold.ttf
+        - asset: Fonts/BeVietnamPro-BoldItalic.ttf
+        - asset: Fonts/BeVietnamPro-ExtraBold.ttf
+        - asset: Fonts/BeVietnamPro-ExtraBoldItalic.ttf
+        - asset: Fonts/BeVietnamPro-ExtraLight.ttf
+        - asset: Fonts/BeVietnamPro-ExtraLightItalic.ttf
+        - asset: Fonts/BeVietnamPro-Italic.ttf
+        - asset: Fonts/BeVietnamPro-Light.ttf
+        - asset: Fonts/BeVietnamPro-LightItalic.ttf
+        - asset: Fonts/BeVietnamPro-Medium.ttf
+        - asset: Fonts/BeVietnamPro-MediumItalic.ttf
+        - asset: Fonts/BeVietnamPro-Regular.ttf
+        - asset: Fonts/BeVietnamPro-SemiBold.ttf
+        - asset: Fonts/BeVietnamPro-SemiBoldItalic.ttf
+        - asset: Fonts/BeVietnamPro-Thin.ttf
+        - asset: Fonts/BeVietnamPro-ThinItalic.ttf
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/to/font-from-package
