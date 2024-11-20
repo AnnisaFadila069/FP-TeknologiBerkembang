@@ -65,8 +65,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                         borderRadius: BorderRadius.circular(8),
                         image: imagePath.isNotEmpty
                             ? DecorationImage(
-                                image: AssetImage(imagePath),
-                                fit: BoxFit.cover,
+                                image: AssetImage('image/bumi_manusia.jpg'),
+                                fit: BoxFit.cover, // Opsional, untuk mengatur cara gambar menyesuaikan ukuran container
                               )
                             : null,
                       ),
@@ -126,10 +126,10 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           ),
                           decoration: BoxDecoration(
                             color: selectedStatus == 'Haven’t Read'
-                            ? Colors.red
-                            : selectedStatus == 'Reading'
-                            ? Colors.orange
-                            : Colors.green,
+                                ? Colors.red
+                                : selectedStatus == 'Reading'
+                                    ? Colors.orange
+                                    : Colors.green,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -213,10 +213,14 @@ class _BookDetailPageState extends State<BookDetailPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CustomTextField(label: 'Starting Reading on', hintText: 'dd-mm-yyyy'),
-        const CustomTextField(label: 'Finished Reading on', hintText: 'dd-mm-yyyy'),
-        const CustomTextField(label: 'Short Note', hintText: 'Enter Notes', maxLines: 3),
-        const CustomTextField(label: 'Review', hintText: 'Enter Review', maxLines: 3),
+        const CustomTextField(
+            label: 'Starting Reading on', hintText: 'dd-mm-yyyy'),
+        const CustomTextField(
+            label: 'Finished Reading on', hintText: 'dd-mm-yyyy'),
+        const CustomTextField(
+            label: 'Short Note', hintText: 'Enter Notes', maxLines: 3),
+        const CustomTextField(
+            label: 'Review', hintText: 'Enter Review', maxLines: 3),
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -260,78 +264,81 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Widget buildEditForm() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CustomTextField(label: 'Title', hintText: titleController.text),
-      CustomTextField(label: 'Author', hintText: authorController.text),
-      CustomTextField(label: 'Publisher', hintText: publisherController.text),
-      CustomDropdown(
-        label: 'Categories',
-        items: ['Fiction', 'Non-Fiction', 'Sci-Fi'],
-        value: selectedCategory,
-        onChanged: (value) {
-          setState(() {
-            selectedCategory = value!;
-          });
-        },
-      ),
-      CustomDropdown(
-        label: 'Status',
-        items: ['Haven’t Read', 'Reading', 'Finished'],
-        value: selectedStatus,
-        onChanged: (value) {
-          setState(() {
-            selectedStatus = value!;
-          });
-        },
-      ),
-      CustomTextField(label: 'Description', hintText: descriptionController.text, maxLines: 5),
-      const SizedBox(height: 16),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              // Hapus buku
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey.shade300, // Warna tombol DELETE
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextField(label: 'Title', hintText: titleController.text),
+        CustomTextField(label: 'Author', hintText: authorController.text),
+        CustomTextField(label: 'Publisher', hintText: publisherController.text),
+        CustomDropdown(
+          label: 'Categories',
+          items: ['Fiction', 'Non-Fiction', 'Sci-Fi'],
+          value: selectedCategory,
+          onChanged: (value) {
+            setState(() {
+              selectedCategory = value!;
+            });
+          },
+        ),
+        CustomDropdown(
+          label: 'Status',
+          items: ['Haven’t Read', 'Reading', 'Finished'],
+          value: selectedStatus,
+          onChanged: (value) {
+            setState(() {
+              selectedStatus = value!;
+            });
+          },
+        ),
+        CustomTextField(
+            label: 'Description',
+            hintText: descriptionController.text,
+            maxLines: 5),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                // Hapus buku
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey.shade300, // Warna tombol DELETE
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'DELETE',
+                style: TextStyle(
+                  fontFamily: 'BeVietnamPro',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-            child: const Text(
-              'DELETE',
-              style: TextStyle(
-                fontFamily: 'BeVietnamPro',
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
+            ElevatedButton(
+              onPressed: () {
+                // Save perubahan
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFC1B6A3), // Warna tombol SAVE
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'SAVE',
+                style: TextStyle(
+                  fontFamily: 'BeVietnamPro',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Save perubahan
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFC1B6A3), // Warna tombol SAVE
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Text(
-              'SAVE',
-              style: TextStyle(
-                fontFamily: 'BeVietnamPro',
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
-      ),
-    ],
-  );
-}
+          ],
+        ),
+      ],
+    );
+  }
 }
