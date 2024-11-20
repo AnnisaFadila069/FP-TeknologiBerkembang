@@ -3,8 +3,7 @@ import 'package:google_fonts/google_fonts.dart'; // For Be Vietnam Pro font
 import 'homescreen.dart';
 import 'history.dart';
 import 'add_page.dart';
-import 'detail_edit.dart'; 
-import 'addpagescreen.dart';
+import 'detail_edit.dart';
 
 void main() {
   runApp(const BookMateApp());

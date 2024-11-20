@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart'; // For page indicator
 import 'detailpagescreen.dart';
-import 'addpagescreen.dart';
+import 'add_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -187,7 +187,7 @@ appBar: AppBar(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddPageScreen()),
+            MaterialPageRoute(builder: (context) => const AddPage()),
           );
         },
         backgroundColor: Colors.brown,
