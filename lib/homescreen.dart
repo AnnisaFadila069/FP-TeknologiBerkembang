@@ -17,24 +17,33 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF9F5EE),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFF9F5EE),
-        elevation: 0,
-        title: const Row(
-          children: [
-            Image(
-              image: AssetImage('image/logo_bookmate.png'),
-              height: 24,  // Sesuaikan ukuran logo sesuai kebutuhan
+appBar: AppBar(
+  backgroundColor: const Color(0xffff5f5eb), // Warna latar AppBar
+  elevation: 0, // Hilangkan bayangan
+  title: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Image.asset(
+            'Image/logo_bookmate.png',
+            width: 48, // Lebar logo
+            height: 48, // Tinggi logo
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            'BookMate',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF6D4C41), // Warna teks
             ),
-            SizedBox(width: 8),
-            Text(
-              'BookMate',
-              style: TextStyle(color: Colors.brown, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-
+    ],
+  ),
+),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -93,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     image: const DecorationImage(
-                                      image: AssetImage('image/bumi_manusia.jpg'),
+                                      image: AssetImage('Image/bumi_manusia.jpg'),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -153,35 +162,26 @@ class _HomeScreenState extends State<HomeScreen> {
               // Categories
               const SectionTitle(title: 'Horror'),
               const HorizontalBookList(books: [
-                {'title': 'Bumi Manusia', 'image': 'image/bumi_manusia.jpg'},
-                {'title': 'Gadis Pantai', 'image': 'image/gadis_pantai.jpg'},
-                {'title': 'Mangir', 'image': 'image/mangir.jpg'},
-                {'title': 'Bumi Manusia', 'image': 'image/bumi_manusia.jpg'},
-                {'title': 'Gadis Pantai', 'image': 'image/gadis_pantai.jpg'},
-                {'title': 'Mangir', 'image': 'image/mangir.jpg'},
+                {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
+                {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
+                {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
+                {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
+                {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
+                {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
               ]),
               const SizedBox(height: 16),
               const SectionTitle(title: 'Historical Fiction'),
               const HorizontalBookList(books: [
-                {'title': 'Jejak Langkah', 'image': 'image/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'image/anak_semua_bangsa.jpg'},
-                {'title': 'Arus Balik', 'image': 'image/arus_balik.jpg'},
-                {'title': 'Jejak Langkah', 'image': 'image/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'image/anak_semua_bangsa.jpg'},
-                {'title': 'Arus Balik', 'image': 'image/arus_balik.jpg'},
+                {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
+                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa.jpg'},
+                {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
+                {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
+                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa.jpg'},
+                {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
               ]),
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-        ],
-        selectedItemColor: Colors.brown,
-        unselectedItemColor: Colors.black54,
-        backgroundColor: const Color(0xFFF9F5EE),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

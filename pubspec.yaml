@@ -23,11 +23,10 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - Image/bumi_manusia.jpg
-    - Image/Logo BookMate.png
-    - Image/bumi_manusia.jpg
     - Image/gadis_pantai.jpg
     - Image/mangir.jpg
-    - Image/anak_semua_bangsa.jpg
+    - Image/anak_semua_bangsa_cover.jpg
+    - Image/Logo BookMate.png
     - Image/arus_balik.jpg
     - Image/jejak_langkah.jpg
     - Image/bumi_manusia_cover.jpg
