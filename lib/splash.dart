@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: const Color(0xFFF5E1C8),
       body: Center(
         child: Image.asset(
-          'Image/gambarLogo.png', // Ganti dengan path gambar Anda
+          'Image/BookMate.jpg', // Ganti dengan path gambar Anda
           height: 200, // Sesuaikan ukuran gambar
         ),
       ),

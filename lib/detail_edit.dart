@@ -290,7 +290,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
         CustomTextField(label: 'Publisher', hintText: publisherController.text),
         CustomDropdown(
           label: 'Categories',
-          items: const ['Fiction', 'Non-Fiction', 'Sci-Fi'],
+          items: ['Fiction', 'Non-Fiction', 'Sci-Fi'],
           value: selectedCategory,
           onChanged: (value) {
             setState(() {
@@ -300,7 +300,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
         ),
         CustomDropdown(
           label: 'Status',
-          items: const ['Haven’t Read', 'Reading', 'Finished'],
+          items: ['Haven’t Read', 'Reading', 'Finished'],
           value: selectedStatus,
           onChanged: (value) {
             setState(() {

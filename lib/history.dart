@@ -86,7 +86,7 @@ bottom: PreferredSize(
         Container(
           width: 60,
           alignment: Alignment.center,
-          child: const Text('Readed'),
+          child: const Text('Unread'),
         ),
         Container(
           width: 60,
@@ -107,7 +107,7 @@ bottom: PreferredSize(
             controller: _tabController,
             children: [
               buildBookGrid(), // Halaman WishList
-              buildReadedGrid(), // Halaman Readed
+              buildUnreadGrid(), // Halaman Unread
               buildFavoriteList(), // Halaman Favorite
             ],
           ),
@@ -192,8 +192,8 @@ Widget buildBookGrid() {
   );
 }
 
-Widget buildReadedGrid() {
-  List<String> ReadedTitles = [
+Widget buildUnreadGrid() {
+  List<String> unreadTitles = [
     'Bumi Manusia',
     'Mangir',
     'Filosofi Teras',
@@ -219,7 +219,7 @@ Widget buildReadedGrid() {
         crossAxisSpacing: 12, // Jarak horizontal antar elemen
         mainAxisSpacing: 4, // Jarak vertikal antar elemen
       ),
-      itemCount: ReadedTitles.length,
+      itemCount: unreadTitles.length,
       itemBuilder: (context, index) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -228,7 +228,7 @@ Widget buildReadedGrid() {
               width: 156,
               height: 210,
               decoration: BoxDecoration(
-                color: const Color(0xfffc1b6a4), // Warna latar belakang untuk Readed
+                color: const Color(0xfffc1b6a4), // Warna latar belakang untuk Unread
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: const [
                   BoxShadow(
@@ -243,7 +243,7 @@ Widget buildReadedGrid() {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
-                    ReadedCovers[index],
+                    unreadCovers[index],
                     width: 140,
                     height: 190,
                     fit: BoxFit.cover,
@@ -253,7 +253,7 @@ Widget buildReadedGrid() {
             ),
             const SizedBox(height: 8),
             Text(
-              ReadedTitles[index],
+              unreadTitles[index],
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
