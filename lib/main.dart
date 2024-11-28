@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart'; // For Be Vietnam Pro font
+import 'splash.dart'; // Impor file splash.dart
 import 'homescreen.dart';
 import 'history.dart';
 import 'add_page.dart';
-import 'detail_edit.dart'; // Sesuaikan dengan nama file Anda
-import 'homescreen.dart';
-import 'history.dart';
-import 'addpagescreen.dart';
+import 'detail_edit.dart';
 
 void main() {
   runApp(const BookMateApp());
@@ -23,7 +21,7 @@ class BookMateApp extends StatelessWidget {
         textTheme: GoogleFonts.beVietnamProTextTheme(), // Applying Be Vietnam Pro
         primaryColor: Colors.brown,
       ),
-      home: const MainPage(),
+      home: const SplashScreen(), // SplashScreen sebagai layar awal
     );
   }
 }
