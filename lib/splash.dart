@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'main.dart'; // Impor main.dart agar bisa langsung mengakses MainPage
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();

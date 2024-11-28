@@ -65,7 +65,7 @@ class _AddPageState extends State<AddPage> {
               // Dropdown untuk Categories
               CustomDropdown(
                 label: 'Categories',
-                items: ['Fiction', 'Non-Fiction', 'Sci-Fi'],
+                items: const ['Fiction', 'Non-Fiction', 'Sci-Fi'],
                 value: selectedCategory,
                 onChanged: (value) {
                   setState(() {
@@ -76,7 +76,7 @@ class _AddPageState extends State<AddPage> {
               // Dropdown untuk Status
               CustomDropdown(
                 label: 'Status',
-                items: ['Selesai', 'Sedang Dibaca', 'Sudah Dibaca'],
+                items: const ['Selesai', 'Sedang Dibaca', 'Sudah Dibaca'],
                 value: selectedStatus,
                 onChanged: (value) {
                   setState(() {
