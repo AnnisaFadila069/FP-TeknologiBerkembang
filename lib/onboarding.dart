@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'main.dart'; // Ganti sesuai dengan file `MainPage` Anda
 
 class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+  const WelcomeScreen({super.key});
 
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
@@ -16,19 +16,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   final List<Map<String, String>> onboardingData = [
     {
-      "image": "assets/images/discover_library.png", // Ganti sesuai path lokal Anda
+      "image": "Image/onboarding1.png", // Ganti sesuai path lokal Anda
       "title": "Discover Your Library",
       "description":
           "Easily organize and manage your personal book collection in one place.",
     },
     {
-      "image": "assets/images/track_progress.png", // Ganti sesuai path lokal Anda
+      "image": "Image/onboarding2.png", // Ganti sesuai path lokal Anda
       "title": "Track Your Progress",
       "description":
           "Keep tabs on what you're reading, mark favorites, and set reading goals.",
     },
     {
-      "image": "assets/images/edit_explore.png", // Ganti sesuai path lokal Anda
+      "image": "Image/onboarding3.png", // Ganti sesuai path lokal Anda
       "title": "Edit & Explore",
       "description":
           "Update book details, remove books, and curate your perfect reading list effortlessly.",
@@ -128,6 +128,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white, // Warna teks putih
                       ),
                     ),
                   ),
@@ -149,7 +150,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       decoration: BoxDecoration(
         color: _currentPage == index
             ? const Color(0xFFB5651D) // Rust color
-            : Colors.grey,
+            : const Color.fromARGB(255, 255, 255, 255),
         borderRadius: BorderRadius.circular(5),
       ),
     );
