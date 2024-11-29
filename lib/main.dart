@@ -7,18 +7,26 @@ import 'history.dart';
 import 'loginpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-void main(){
-  if (kIsWeb){
-    Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: "AIzaSyCfL1BFQIjPtZHTPmaSrhdcAvXir9E9d80", authDomain: "tekber-310ab.firebaseapp.com",
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inisialisasi Firebase untuk platform web atau mobile
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+        apiKey: "AIzaSyCfL1BFQIjPtZHTPmaSrhdcAvXir9E9d80",
+        authDomain: "tekber-310ab.firebaseapp.com",
         projectId: "tekber-310ab",
-        storageBucket: "tekber-310ab.firebasestorage.app",
+        storageBucket: "tekber-310ab.appspot.com",
         messagingSenderId: "87504152760",
         appId: "1:87504152760:web:7e695484310b2c753b6c4d",
-        measurementId: "G-0Z2FMPXH2F"));
+        measurementId: "G-0Z2FMPXH2F",
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
   }
-  
+
   runApp(const BookMateApp());
 }
 

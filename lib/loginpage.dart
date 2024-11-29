@@ -2,16 +2,28 @@ import 'forgotpasswordpage.dart';
 import 'registerpage.dart';
 import 'main.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
+import 'auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
+
 class _LoginPageState extends State<LoginPage> {
+  final _auth = AuthService();
+
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _obscureText = true;
+
+  @override
+  void dispose() {
+    super.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
+  }
 
   void login(BuildContext context) {
     String username = usernameController.text.trim();
