@@ -1,11 +1,24 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'splash.dart';
 import 'homescreen.dart';
 import 'history.dart';
 import 'loginpage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main(){
+  if (kIsWeb){
+    Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: "AIzaSyCfL1BFQIjPtZHTPmaSrhdcAvXir9E9d80", authDomain: "tekber-310ab.firebaseapp.com",
+        projectId: "tekber-310ab",
+        storageBucket: "tekber-310ab.firebasestorage.app",
+        messagingSenderId: "87504152760",
+        appId: "1:87504152760:web:7e695484310b2c753b6c4d",
+        measurementId: "G-0Z2FMPXH2F"));
+  }
+  
   runApp(const BookMateApp());
 }
 
