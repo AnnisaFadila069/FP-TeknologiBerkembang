@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart'; // For Be Vietnam Pro font
 import 'splash.dart'; // Impor file splash.dart
 import 'homescreen.dart';
 import 'history.dart';
+import 'forgotpasswordpage.dart'; // Mengimpor ForgotPasswordPage
+import 'loginpage.dart';// Mengimpor LoginPage
 
 void main() {
   runApp(const BookMateApp());
@@ -19,7 +21,7 @@ class BookMateApp extends StatelessWidget {
         textTheme: GoogleFonts.beVietnamProTextTheme(), // Applying Be Vietnam Pro
         primaryColor: Colors.brown,
       ),
-      home: const SplashScreen(), // SplashScreen sebagai layar awal
+      home: const MainPage(),
     );
   }
 }
