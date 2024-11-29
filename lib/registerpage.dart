@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'profilepage.dart'; // Pastikan ProfilePage diimpor dengan benar
+import 'loginpage.dart'; // Impor LoginPage
+import 'main.dart'; 
 
 class RegisterPage extends StatelessWidget {
   final TextEditingController usernameController = TextEditingController();
@@ -14,21 +15,18 @@ class RegisterPage extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Registration Successful'),
+            title: const Text('Registration Successful'),
             content: Text('Welcome, ${usernameController.text}!'),
             actions: [
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 style: TextButton.styleFrom(foregroundColor: Colors.black),
                 onPressed: () {
                   Navigator.pop(context); // Tutup dialog
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProfilePage(
-                        username: usernameController.text,
-                        email: emailController.text,
-                      ),
+                      builder: (context) => const BookMateApp(), 
                     ),
                   );
                 },
@@ -42,11 +40,11 @@ class RegisterPage extends StatelessWidget {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Registration Failed'),
-            content: Text('Please fill all fields'),
+            title: const Text('Registration Failed'),
+            content: const Text('Please fill all fields'),
             actions: [
               TextButton(
-                child: Text('OK'),
+                child: const Text('OK'),
                 style: TextButton.styleFrom(foregroundColor: Colors.black),
                 onPressed: () => Navigator.pop(context),
               ),
@@ -60,7 +58,7 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5EB),
+      backgroundColor: const Color(0xFFFDF6EC),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -74,15 +72,15 @@ class RegisterPage extends StatelessWidget {
                     width: 100,
                     height: 100,
                   ),
-                  SizedBox(height: 10),
-                  Text(
+                  const SizedBox(height: 10),
+                  const Text(
                     'BookMate',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 30), // Jarak kecil antara tulisan dan form
+                  const SizedBox(height: 30), // Jarak kecil antara tulisan dan form
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
@@ -92,51 +90,51 @@ class RegisterPage extends StatelessWidget {
                           decoration: InputDecoration(
                             hintText: 'Username',
                             filled: true,
-                            fillColor: Color(0xFFE4DECF),
+                            fillColor: const Color(0xFFE4DECF),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                         ),
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         TextField(
                           controller: emailController,
                           decoration: InputDecoration(
                             hintText: 'Email',
                             filled: true,
-                            fillColor: Color(0xFFE4DECF),
+                            fillColor: const Color(0xFFE4DECF),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                         ),
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         TextField(
                           controller: passwordController,
                           decoration: InputDecoration(
                             hintText: 'Password',
                             filled: true,
-                            fillColor: Color(0xFFE4DECF),
+                            fillColor: const Color(0xFFE4DECF),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
                           ),
                           obscureText: true,
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () => register(context),
-                          child: Text(
+                          child: const Text(
                             'Create Account',
                             style: TextStyle(color: Colors.black),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFFE4DECF),
-                            padding: EdgeInsets.symmetric(
+                            backgroundColor: const Color(0xFFE4DECF),
+                            padding: const EdgeInsets.symmetric(
                                 vertical: 12, horizontal: 40),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15),
-                              side: BorderSide(color: Colors.black),
+                              side: const BorderSide(color: Colors.black),
                             ),
                           ),
                         ),
@@ -148,20 +146,25 @@ class RegisterPage extends StatelessWidget {
             ),
           ),
           Container(
-            color: Color(0xFFB3907A),
-            padding: EdgeInsets.symmetric(vertical: 16.0),
+            color: const Color(0xFFB3907A),
+            padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   'Already have an Account?',
                   style: TextStyle(color: Colors.white),
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(), // Arahkan ke LoginPage
+                      ),
+                    );
                   },
-                  child: Text(
+                  child: const Text(
                     'Log In Here',
                     style: TextStyle(
                       color: Colors.white,

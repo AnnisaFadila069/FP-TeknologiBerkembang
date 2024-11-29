@@ -1,48 +1,60 @@
 import 'forgotpasswordpage.dart';
 import 'registerpage.dart';
+import 'main.dart';
 import 'package:flutter/material.dart';
-import 'homescreen.dart'; // Mengimpor HomeScreen
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool _obscureText = true;
 
   void login(BuildContext context) {
-    String username = usernameController.text;
+    String username = usernameController.text.trim();
     String password = passwordController.text;
 
-    if (username.isNotEmpty && password.isNotEmpty) {
-      // Jika login berhasil, arahkan ke HomeScreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
-      );
-    } else {
-      // Jika login gagal, tampilkan dialog error
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Login Failed'),
-            content: const Text('Please fill out all fields!'),
-            actions: [
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+    if (username.isEmpty || password.isEmpty) {
+      _showErrorDialog(context, 'Login Failed', 'Please fill out all fields!');
+      return;
     }
+
+    if (!RegExp(r'^[a-zA-Z0-9_.]+$').hasMatch(username)) {
+      _showErrorDialog(context, 'Login Failed', 'Invalid username format!');
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const MainPage()),
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5EB),
+      backgroundColor: const Color(0xFFFDF6EC),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -55,6 +67,9 @@ class LoginPage extends StatelessWidget {
                     'Image/logo_bookmate.png',
                     width: 100,
                     height: 100,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.book, size: 100, color: Colors.grey);
+                    },
                   ),
                   const SizedBox(height: 10),
                   const Text(
@@ -72,31 +87,41 @@ class LoginPage extends StatelessWidget {
                       children: [
                         TextField(
                           controller: usernameController,
-                          decoration:  InputDecoration(
+                          decoration: InputDecoration(
                             hintText: 'Username',
                             filled: true,
-                            fillColor: Color(0xFFE4DECF),
+                            fillColor: const Color(0xFFE4DECF),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
                           ),
                         ),
                         const SizedBox(height: 15),
                         TextField(
                           controller: passwordController,
+                          obscureText: _obscureText,
                           decoration: InputDecoration(
                             hintText: 'Password',
                             filled: true,
-                            fillColor: Color(0xFFE4DECF),
+                            fillColor: const Color(0xFFE4DECF),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureText ? Icons.visibility : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                            ),
                           ),
-                          obscureText: true,
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(

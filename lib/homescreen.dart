@@ -16,8 +16,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F5EE),
+      backgroundColor: const Color(0xFFFDF6EC),
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Menghilangkan tombol back
         backgroundColor: const Color(0xFFF5F5EB),
         elevation: 0,
         title: Row(
@@ -70,8 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: 3, // Number of items in the PageView
                   itemBuilder: (context, index) {
                     final featuredBooks = [
-                      {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
-                      {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
+                      {
+                        'title': 'Bumi Manusia',
+                        'image': 'Image/bumi_manusia.jpg'
+                      },
+                      {
+                        'title': 'Gadis Pantai',
+                        'image': 'Image/gadis_pantai.jpg'
+                      },
                       {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
                     ];
 
@@ -104,7 +111,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     image: DecorationImage(
-                                      image: AssetImage(featuredBooks[index]['image']!),
+                                      image: AssetImage(
+                                          featuredBooks[index]['image']!),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -112,7 +120,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
@@ -175,10 +184,16 @@ class _HomeScreenState extends State<HomeScreen> {
               const SectionTitle(title: 'Historical Fiction'),
               const HorizontalBookList(books: [
                 {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa_cover.jpg'},
+                {
+                  'title': 'Anak Semua Bangsa',
+                  'image': 'Image/anak_semua_bangsa_cover.jpg'
+                },
                 {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
                 {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa', 'image': 'Image/anak_semua_bangsa_cover.jpg'},
+                {
+                  'title': 'Anak Semua Bangsa',
+                  'image': 'Image/anak_semua_bangsa_cover.jpg'
+                },
                 {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
               ]),
             ],

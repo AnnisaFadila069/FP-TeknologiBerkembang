@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart'; // For Be Vietnam Pro font
-import 'splash.dart'; // Impor file splash.dart
+import 'package:google_fonts/google_fonts.dart';
+import 'splash.dart';
 import 'homescreen.dart';
 import 'history.dart';
-import 'forgotpasswordpage.dart'; // Mengimpor ForgotPasswordPage
-import 'loginpage.dart';// Mengimpor LoginPage
+import 'loginpage.dart';
 
 void main() {
   runApp(const BookMateApp());
@@ -18,10 +17,10 @@ class BookMateApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.beVietnamProTextTheme(), // Applying Be Vietnam Pro
-        primaryColor: Colors.brown,
+        textTheme: GoogleFonts.beVietnamProTextTheme(),
+        primarySwatch: Colors.brown,
       ),
-      home: const MainPage(),
+      home: const SplashScreen(),
     );
   }
 }
@@ -53,6 +52,7 @@ class _MainPageState extends State<MainPage> {
         selectedItemColor: Colors.brown,
         unselectedItemColor: Colors.grey,
         backgroundColor: const Color(0xFFF9F5EE),
+        type: BottomNavigationBarType.fixed,
         onTap: (index) {
           setState(() {
             _currentIndex = index;

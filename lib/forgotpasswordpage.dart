@@ -7,7 +7,7 @@ class ForgotPasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5EB),
+      backgroundColor: const Color(0xFFFDF6EC),
       appBar: AppBar(
         backgroundColor: Color(0xFFB3907A),
         title: Text('Forgot Password'),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'main.dart'; // Ganti sesuai dengan file `MainPage` Anda
+import 'registerpage.dart'; // Impor RegisterPage
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -104,14 +104,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 15),
+                          vertical: 12, horizontal: 40),
                     ),
                     onPressed: () {
                       if (_currentPage == onboardingData.length - 1) {
+                        // Navigasi ke RegisterPage setelah "Get Started"
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const MainPage(),
+                            builder: (context) => RegisterPage(),
                           ),
                         );
                       } else {
@@ -150,7 +151,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       decoration: BoxDecoration(
         color: _currentPage == index
             ? const Color(0xFFB5651D) // Rust color
-            : const Color.fromARGB(255, 255, 255, 255),
+            : Colors.grey,
         borderRadius: BorderRadius.circular(5),
       ),
     );
