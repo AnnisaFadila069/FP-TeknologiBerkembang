@@ -1,58 +1,81 @@
 import 'package:flutter/material.dart';
-import 'loginpage.dart'; // Impor LoginPage
-import 'main.dart'; 
+import 'auth_service.dart';
+import 'main.dart';
+import 'loginpage.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final _auth = AuthService();
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void register(BuildContext context) {
-    if (usernameController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Registration Successful'),
-            content: Text('Welcome, ${usernameController.text}!'),
-            actions: [
-              TextButton(
-                child: const Text('OK'),
-                style: TextButton.styleFrom(foregroundColor: Colors.black),
-                onPressed: () {
-                  Navigator.pop(context); // Tutup dialog
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> register(BuildContext context) async {
+    final username = usernameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      _showDialog(context, 'Registration Failed', 'Please fill all fields.');
+      return;
+    }
+
+    try {
+      final user = await _auth.createUserWithEmailAndPassword(email, password);
+      if (user != null) {
+        _showDialog(context, 'Registration Successful', 'Welcome, $username!',
+            isSuccess: true);
+      } else {
+        _showDialog(
+            context, 'Registration Failed', 'Could not register the user.');
+      }
+    } catch (e) {
+      _showDialog(context, 'Registration Failed', 'Error: $e');
+    }
+  }
+
+  void _showDialog(BuildContext context, String title, String message,
+      {bool isSuccess = false}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                if (isSuccess) {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const BookMateApp(), 
+                      builder: (context) =>  LoginPage(),
                     ),
                   );
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Registration Failed'),
-            content: const Text('Please fill all fields'),
-            actions: [
-              TextButton(
-                child: const Text('OK'),
-                style: TextButton.styleFrom(foregroundColor: Colors.black),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          );
-        },
-      );
-    }
+                }
+              },
+              child: const Text('OK'),
+
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -75,12 +98,9 @@ class RegisterPage extends StatelessWidget {
                   const SizedBox(height: 10),
                   const Text(
                     'BookMate',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 30), // Jarak kecil antara tulisan dan form
+                  const SizedBox(height: 30),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Column(
@@ -160,7 +180,7 @@ class RegisterPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LoginPage(), // Arahkan ke LoginPage
+                        builder: (context) => LoginPage(),
                       ),
                     );
                   },
