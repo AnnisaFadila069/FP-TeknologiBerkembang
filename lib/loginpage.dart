@@ -11,19 +11,19 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _auth = AuthService();
-  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _obscureText = true;
 
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
 
   void login(BuildContext context) async {
-    String email = usernameController.text.trim();
+    String email = emailController.text.trim();
     String password = passwordController.text;
 
     // Validate input
@@ -39,16 +39,38 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     try {
-      final user = await _auth.loginUserWithEmailAndPassword(email, password);
-      if (user != null) {
-        // Navigate to the main screen
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MainPage()));
-      } else {
-        _showErrorDialog(context, 'Login Failed', 'Invalid credentials!');
-      }
-    } catch (e) {
-      _showErrorDialog(context, 'Login Failed', e.toString());
-    }
+  final user = await _auth.loginUserWithEmailAndPassword(email, password);
+
+  if (user != null) {
+    // Navigate to the main screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MainPage()),
+    );
+  } else {
+    _showErrorDialog(
+      context,
+      'Login Failed',
+      'Invalid credentials. Please check your email and password.',
+    );
+  }
+} catch (e) {
+  String errorMessage;
+
+  // Customize error messages based on the error type
+  if (e.toString().contains('user-not-found')) {
+    errorMessage = 'No account found for this email. Please sign up first.';
+  } else if (e.toString().contains('wrong-password')) {
+    errorMessage = 'Invalid email format. Please check and try again.';
+  } else if (e.toString().contains('invalid-email')) {
+    errorMessage = 'Invalid email format. Please check and try again.';
+  } else {
+    errorMessage = 'Invalid credentials. Please check your email and password.';
+  }
+
+  _showErrorDialog(context, 'Login Failed', errorMessage);
+}
+
   }
 
   void _showErrorDialog(BuildContext context, String title, String message) {
@@ -104,7 +126,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       children: [
                         TextField(
-                          controller: usernameController,
+                          controller: emailController,
                           decoration: InputDecoration(
                             hintText: 'Email',
                             filled: true,
