@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'auth_service.dart';
 import 'main.dart';
 import 'loginpage.dart';
+import 'profilepage.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -61,16 +62,19 @@ class _RegisterPageState extends State<RegisterPage> {
               onPressed: () {
                 Navigator.pop(context);
                 if (isSuccess) {
+                  // Ubah tujuan navigasi ke ProfilePage
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>  LoginPage(),
+                      builder: (context) => ProfilePage(
+                        username: usernameController.text.trim(),
+                        email: emailController.text.trim(),
+                      ),
                     ),
                   );
                 }
               },
               child: const Text('OK'),
-
             ),
           ],
         );
