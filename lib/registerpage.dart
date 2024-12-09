@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
-import 'main.dart';
 import 'loginpage.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -24,6 +23,11 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  bool isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
   Future<void> register(BuildContext context) async {
     final username = usernameController.text.trim();
     final email = emailController.text.trim();
@@ -34,14 +38,23 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    if (!isValidEmail(email)) {
+      _showDialog(context, 'Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+
     try {
       final user = await _auth.createUserWithEmailAndPassword(email, password);
       if (user != null) {
-        _showDialog(context, 'Registration Successful', 'Welcome, $username!',
-            isSuccess: true);
-      } else {
+        await user?.sendEmailVerification(); // Kirim email verifikasi
         _showDialog(
-            context, 'Registration Failed', 'Could not register the user.');
+          context,
+          'Registration Successful',
+          'A verification email has been sent to $email. Please verify your email before logging in.',
+          isSuccess: true,
+        );
+      } else {
+        _showDialog(context, 'Registration Failed', 'Could not register the user.');
       }
     } catch (e) {
       _showDialog(context, 'Registration Failed', 'Error: $e');
@@ -64,13 +77,12 @@ class _RegisterPageState extends State<RegisterPage> {
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>  LoginPage(),
+                      builder: (context) => LoginPage(),
                     ),
                   );
                 }
               },
               child: const Text('OK'),
-
             ),
           ],
         );

@@ -95,6 +95,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
             // Full Name Field
             _buildLabeledFormField('Full Name', fullNameController),
+            TextField(controller: fullNameController,),
             SizedBox(height: 15),
 
             // Phone Number Field
@@ -104,6 +105,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
             // Date of Birth Field
             _buildDateOfBirthField(),
+            TextField(controller: dateOfBirthController,),
             SizedBox(height: 15),
 
             // Gender Dropdown
