@@ -155,7 +155,11 @@ class _AddPageState extends State<AddPage> {
               ),
               CustomDropdown(
                 label: 'Status',
+<<<<<<< HEAD
                 items: _statuses,
+=======
+                items: ['Reading','Have Not Read', 'Finished'],
+>>>>>>> d08be0a05769d62481198d0eff3a8ea0c922c220
                 value: selectedStatus,
                 onChanged: (value) {
                   setState(() {
