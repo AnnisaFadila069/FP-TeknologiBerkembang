@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'auth_service.dart';
-import 'main.dart';
 import 'loginpage.dart';
 import 'profilepage.dart';
 

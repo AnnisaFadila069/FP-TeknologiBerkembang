@@ -4,7 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'splash.dart';
 import 'homescreen.dart';
 import 'history.dart';
-import 'loginpage.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
