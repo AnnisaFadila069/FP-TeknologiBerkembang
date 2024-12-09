@@ -35,7 +35,7 @@ class BookMateApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BookMate',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textTheme: GoogleFonts.beVietnamProTextTheme(),
         primarySwatch: Colors.brown,
@@ -63,50 +63,32 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5EB),
-      appBar: AppBar(
-        backgroundColor: Color(0xFFF5F5EB),
-        elevation: 0,
-        title: Row(
-          children: [
-            Image.asset(
-              'Image/logo BookMate.png', 
-              height: 42,
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              'BookMate',
-              style: TextStyle(
-                fontFamily: 'BeVietnamPro',
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: Color(0xFF918673)),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddPage()),
-              );
-            },
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        selectedItemColor: Colors.brown,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: const Color(0xFFF9F5EE),
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'History',
           ),
         ],
       ),
-      body: Row(
-        children: [],
-      ),
-      debugShowCheckedModeBanner: false,
-      title: 'Book Detail App',
-      theme: ThemeData(
-        primarySwatch: Colors.brown,
-      ),
-      home: const BookDetailPage(), // Menggunakan halaman BookDetailPage
-
     );
   }
 }
