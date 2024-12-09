@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fp_kelompok3/profilepage.dart';
 import 'loginpage.dart';
+import 'profilepage.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -10,7 +13,9 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _auth = AuthService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -44,51 +49,75 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     try {
-      final user = await _auth.createUserWithEmailAndPassword(email, password);
+      // Daftarkan pengguna ke Firebase Authentication
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = userCredential.user;
+
       if (user != null) {
-        await user?.sendEmailVerification(); // Kirim email verifikasi
+        // Simpan data ke Firestore
+        await _firestore.collection('users').doc(user.uid).set({
+          'username': username,
+          'email': email,
+          'profileData': null, // Default nilai null
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        // Kirim email verifikasi
+        await user.sendEmailVerification();
+
         _showDialog(
           context,
           'Registration Successful',
           'A verification email has been sent to $email. Please verify your email before logging in.',
           isSuccess: true,
         );
-      } else {
-        _showDialog(context, 'Registration Failed', 'Could not register the user.');
       }
+    } on FirebaseAuthException catch (e) {
+      _showDialog(context, 'Registration Failed', e.message ?? 'Unknown error occurred.');
     } catch (e) {
       _showDialog(context, 'Registration Failed', 'Error: $e');
     }
   }
 
   void _showDialog(BuildContext context, String title, String message,
-      {bool isSuccess = false}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                if (isSuccess) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => LoginPage(),
+    {bool isSuccess = false}) {
+  final username = usernameController.text.trim();
+  final email = emailController.text.trim();
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            child: const Text('OK'),
+            onPressed: () {
+              Navigator.pop(context); // Menutup dialog
+              if (isSuccess) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                      username: username,
+                      email: email,
                     ),
-                  );
-                }
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
