@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -14,6 +15,9 @@ class _AddPageState extends State<AddPage> {
   final TextEditingController _authorController = TextEditingController();
   final TextEditingController _publisherController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+
+  // Firebase Auth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // State nilai awal dropdown
   String selectedCategory = 'Fiction';
@@ -56,6 +60,15 @@ class _AddPageState extends State<AddPage> {
     }
 
     try {
+      // Mendapatkan user ID yang sedang login
+      final User? user = _auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User not logged in')),
+        );
+        return;
+      }
+
       // Menyimpan data ke Firestore
       await FirebaseFirestore.instance.collection('books').add({
         'title': _titleController.text,
@@ -65,6 +78,7 @@ class _AddPageState extends State<AddPage> {
         'categories': selectedCategory,
         'status': selectedStatus,
         'created_at': FieldValue.serverTimestamp(),
+        'user_id': user.uid, // Tautkan ke user_id
       });
 
       // Menampilkan pesan berhasil

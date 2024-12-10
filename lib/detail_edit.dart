@@ -1,43 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_widgets.dart';
 
 class BookDetailPage extends StatefulWidget {
-  final String bookTitle;
-  final String bookImagePath;
+  final String bookId;
 
-  const BookDetailPage({super.key, required this.bookTitle, required this.bookImagePath});
+  const BookDetailPage({Key? key, required this.bookId}) : super(key: key);
 
   @override
-  State<BookDetailPage> createState() => _BookDetailPageState();
+  _BookDetailPageState createState() => _BookDetailPageState();
 }
 
 class _BookDetailPageState extends State<BookDetailPage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  late TextEditingController _titleController;
+  late TextEditingController _authorController;
+  late TextEditingController _publisherController;
+  late TextEditingController _descriptionController;
+
+  bool isEditing = false;
   String selectedCategory = 'Fiction';
   String selectedStatus = 'Haven’t Read';
-  bool isEditing = false;
-  late String imagePath;
-
-  late TextEditingController titleController;
-  final TextEditingController authorController =
-      TextEditingController(text: "Nama Author");
-  final TextEditingController publisherController =
-      TextEditingController(text: "xxxxxxx");
-  final TextEditingController descriptionController = TextEditingController();
+  String imagePath = "";
 
   @override
   void initState() {
     super.initState();
-    titleController = TextEditingController(text: widget.bookTitle);
-    imagePath = widget.bookImagePath;
+
+    _titleController = TextEditingController();
+    _authorController = TextEditingController();
+    _publisherController = TextEditingController();
+    _descriptionController = TextEditingController();
+
+    _loadBookDetails();
   }
 
-  @override
-  void dispose() {
-    titleController.dispose();
-    authorController.dispose();
-    publisherController.dispose();
-    descriptionController.dispose();
-    super.dispose();
+  Future<void> _loadBookDetails() async {
+    final bookData = await _firestore.collection('books').doc(widget.bookId).get();
+    final data = bookData.data();
+    if (data != null) {
+      setState(() {
+        _titleController.text = data['title'];
+        _authorController.text = data['author'];
+        _publisherController.text = data['publisher'];
+        _descriptionController.text = data['description'];
+        selectedCategory = data['category'] ?? 'Fiction';
+        selectedStatus = data['status'] ?? 'Haven’t Read';
+        imagePath = data['imagePath'] ?? '';
+      });
+    }
+  }
+
+  Future<void> _saveBook() async {
+    await _firestore.collection('books').doc(widget.bookId).update({
+      'title': _titleController.text,
+      'author': _authorController.text,
+      'publisher': _publisherController.text,
+      'description': _descriptionController.text,
+      'category': selectedCategory,
+      'status': selectedStatus,
+      'imagePath': imagePath,
+    });
+    setState(() {
+      isEditing = false;
+    });
+  }
+
+  Future<void> _deleteBook() async {
+    await _firestore.collection('books').doc(widget.bookId).delete();
+    Navigator.pop(context);
   }
 
   @override
@@ -73,7 +105,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 children: [
                   GestureDetector(
                     onTap: () async {
-                      // Fungsi untuk memilih gambar
+                      // Logika memilih gambar
                     },
                     child: Container(
                       width: 100,
@@ -83,7 +115,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                         borderRadius: BorderRadius.circular(8),
                         image: imagePath.isNotEmpty
                             ? DecorationImage(
-                                image: AssetImage(imagePath),
+                                image: NetworkImage(imagePath),
                                 fit: BoxFit.cover,
                               )
                             : null,
@@ -100,7 +132,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          titleController.text,
+                          _titleController.text,
                           style: const TextStyle(
                             fontFamily: 'BeVietnamPro',
                             fontSize: 18,
@@ -110,7 +142,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Author: ${authorController.text}',
+                          'Author: ${_authorController.text}',
                           style: const TextStyle(
                             fontFamily: 'BeVietnamPro',
                             fontSize: 14,
@@ -119,7 +151,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           ),
                         ),
                         Text(
-                          'Publisher: ${publisherController.text}',
+                          'Publisher: ${_publisherController.text}',
                           style: const TextStyle(
                             fontFamily: 'BeVietnamPro',
                             fontSize: 14,
@@ -219,7 +251,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 ],
               ),
               const SizedBox(height: 16),
-              isEditing ? buildEditForm() : buildNotesForm(),
+              isEditing ? _buildEditForm() : buildNotesForm(),
             ],
           ),
         ),
@@ -281,80 +313,103 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-  Widget buildEditForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomTextField(label: 'Title', hintText: titleController.text),
-        CustomTextField(label: 'Author', hintText: authorController.text),
-        CustomTextField(label: 'Publisher', hintText: publisherController.text),
-        CustomDropdown(
-          label: 'Categories',
-          items: const ['Fiction', 'Non-Fiction', 'Sci-Fi'],
-          value: selectedCategory,
-          onChanged: (value) {
-            setState(() {
-              selectedCategory = value!;
-            });
-          },
-        ),
-        CustomDropdown(
-          label: 'Status',
-          items: const ['Haven’t Read', 'Reading', 'Finished'],
-          value: selectedStatus,
-          onChanged: (value) {
-            setState(() {
-              selectedStatus = value!;
-            });
-          },
-        ),
-        CustomTextField(
-            label: 'Description',
-            hintText: descriptionController.text,
-            maxLines: 5),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                // Hapus buku
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey.shade300,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'DELETE',
-                style: TextStyle(
-                  fontFamily: 'BeVietnamPro',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+  Widget _buildEditForm() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CustomTextField(
+        label: 'Title',
+        hintText: _titleController.text,
+        controller: _titleController,
+      ),
+      CustomTextField(
+        label: 'Author',
+        hintText: _authorController.text,
+        controller: _authorController,
+      ),
+      CustomTextField(
+        label: 'Publisher',
+        hintText: _publisherController.text,
+        controller: _publisherController,
+      ),
+      CustomDropdown(
+        label: 'Categories',
+        items: ['Fiction',
+                'Non-Fiction',
+                'Self-Help & Personal Development',
+                'Business & Finance',
+                'Science & Technology',
+                'Health & Wellness',
+                'Biography & Memoir',
+                'History',
+                'Religion & Spirituality',
+                'Education & Reference',
+                'Art & Design',
+                'Travel & Adventure',
+                'Poetry',
+                'Children’s Books',
+                'Graphic Novels & Comics',],
+        value: ['Fiction',
+                'Non-Fiction',
+                'Self-Help & Personal Development',
+                'Business & Finance',
+                'Science & Technology',
+                'Health & Wellness',
+                'Biography & Memoir',
+                'History',
+                'Religion & Spirituality',
+                'Education & Reference',
+                'Art & Design',
+                'Travel & Adventure',
+                'Poetry',
+                'Children’s Books',
+                'Graphic Novels & Comics',].contains(selectedCategory)
+            ? selectedCategory
+            : 'Fiction', // Fallback jika value tidak valid
+        onChanged: (value) {
+          setState(() {
+            selectedCategory = value!;
+          });
+        },
+      ),
+      CustomDropdown(
+        label: 'Status',
+        items: ['Haven’t Read', 'Reading', 'Finished'],
+        value: ['Haven’t Read', 'Reading', 'Finished'].contains(selectedStatus)
+            ? selectedStatus
+            : 'Haven’t Read', // Fallback jika value tidak valid
+        onChanged: (value) {
+          setState(() {
+            selectedStatus = value!;
+          });
+        },
+      ),
+      CustomTextField(
+        label: 'Description',
+        hintText: _descriptionController.text,
+        controller: _descriptionController,
+        maxLines: 4,
+      ),
+      const SizedBox(height: 16),
+      Center(
+        child: ElevatedButton(
+          onPressed: _saveBook,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFC1B6A3),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          ),
+          child: const Text(
+            'SAVE',
+            style: TextStyle(
+              fontFamily: 'BeVietnamPro',
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Save perubahan
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC1B6A3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'SAVE',
-                style: TextStyle(
-                  fontFamily: 'BeVietnamPro',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );

@@ -50,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     try {
-      // Daftarkan pengguna ke Firebase Authentication
+      // Register user with Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -59,15 +59,15 @@ class _RegisterPageState extends State<RegisterPage> {
       User? user = userCredential.user;
 
       if (user != null) {
-        // Simpan data ke Firestore
+        // Save data to Firestore
         await _firestore.collection('users').doc(user.uid).set({
           'username': username,
           'email': email,
-          'profileData': null, // Default nilai null
+          'profileData': null, // Default value
           'createdAt': FieldValue.serverTimestamp(),
         });
 
-        // Kirim email verifikasi
+        // Send email verification
         await user.sendEmailVerification();
 
         _showDialog(
@@ -84,41 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  void _showDialog(BuildContext context, String title, String message,
-    {bool isSuccess = false}) {
-  final username = usernameController.text.trim();
-  final email = emailController.text.trim();
-
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(title),
-        content: Text(message),
-        actions: [
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () {
-              Navigator.pop(context); // Menutup dialog
-              if (isSuccess) {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                      username: username,
-                      email: email,
-                    ),
-                  ),
-                );
-              }
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-      {bool isSuccess = false}) {
+  void _showDialog(BuildContext context, String title, String message, {bool isSuccess = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -127,10 +93,10 @@ class _RegisterPageState extends State<RegisterPage> {
           content: Text(message),
           actions: [
             TextButton(
+              child: const Text('OK'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context); // Close dialog
                 if (isSuccess) {
-                  // Ubah tujuan navigasi ke ProfilePage
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -142,14 +108,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   );
                 }
               },
-              child: const Text('OK'),
             ),
           ],
         );
       },
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
