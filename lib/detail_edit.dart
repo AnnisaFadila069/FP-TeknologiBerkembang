@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_widgets.dart';
+import 'package:intl/intl.dart';
 
 class BookDetailPage extends StatefulWidget {
   final String bookId;
@@ -34,6 +35,35 @@ class _BookDetailPageState extends State<BookDetailPage> {
   late String initialCategory;
   late String initialStatus;
 
+  // Variabel untuk menyimpan notes
+  late DateTime notesStartDate;
+  late DateTime notesEndDate;
+  late String shortNote;
+  late String review;
+  bool isFavorite = false; // Nilai default
+
+// Variabel sementara untuk notes
+  late DateTime tempNotesStartDate;
+  late DateTime tempNotesEndDate;
+  late String tempShortNote;
+  late String tempReview;
+  late bool tempIsFavorite = false;
+
+  // Variabel untuk menyimpan data asli dari Firestore
+  late DateTime initialNotesStartDate;
+  late DateTime initialNotesEndDate;
+  late String initialShortNote;
+  late String initialReview;
+  late bool initialIsFavorite = false;
+
+// Controller untuk input
+  late TextEditingController shortNoteController;
+  late TextEditingController reviewController;
+
+// Controller untuk format tanggal (opsional jika menggunakan DatePicker)
+  late TextEditingController notesStartDateController;
+  late TextEditingController notesEndDateController;
+
   bool isEditing = false;
   String selectedCategory = 'Fiction';
   String selectedStatus = 'Haven’t Read';
@@ -47,6 +77,19 @@ class _BookDetailPageState extends State<BookDetailPage> {
     _authorController = TextEditingController();
     _publisherController = TextEditingController();
     _descriptionController = TextEditingController();
+
+    // Inisialisasi notes
+    notesStartDate = DateTime.now();
+    notesEndDate = DateTime.now();
+    shortNote = '';
+    review = '';
+    isFavorite = false;
+
+    // Inisialisasi controller
+    shortNoteController = TextEditingController();
+    reviewController = TextEditingController();
+    notesStartDateController = TextEditingController();
+    notesEndDateController = TextEditingController();
 
     _loadBookDetails();
   }
@@ -80,6 +123,61 @@ class _BookDetailPageState extends State<BookDetailPage> {
         initialDescription = _descriptionController.text;
         initialCategory = selectedCategory;
         initialStatus = selectedStatus;
+
+        // Muat data notes
+        notesStartDate =
+            (data['notes']['notesStartDate'] as Timestamp?)?.toDate() ??
+                DateTime.now();
+        notesEndDate =
+            (data['notes']['notesEndDate'] as Timestamp?)?.toDate() ??
+                DateTime.now();
+        shortNote = data['notes']['shortNote'] ?? '';
+        review = data['notes']['review'] ?? '';
+        isFavorite = data['notes']['isFavorite'] ?? false;
+
+        // Sinkronkan dengan controller
+        notesStartDateController.text =
+            DateFormat('dd-MM-yyyy').format(notesStartDate);
+        notesEndDateController.text =
+            DateFormat('dd-MM-yyyy').format(notesEndDate);
+        shortNoteController.text = shortNote;
+        reviewController.text = review;
+
+        // Data notes
+        if (data['notes'] != null) {
+          notesStartDate =
+              (data['notes']['notesStartDate'] as Timestamp).toDate();
+          notesEndDate = (data['notes']['notesEndDate'] as Timestamp).toDate();
+          shortNote = data['notes']['shortNote'] ?? '';
+          review = data['notes']['review'] ?? '';
+          isFavorite = data['notes']['isFavorite'] ?? false;
+
+          // Data buku
+          tempTitle = data['title'] ?? '';
+          tempAuthor = data['author'] ?? '';
+          tempPublisher = data['publisher'] ?? '';
+          tempDescription = data['description'] ?? '';
+          tempCategory = data['category'] ?? 'Fiction';
+          tempStatus = data['status'] ?? 'Haven’t Read';
+
+          // Data notes
+          tempNotesStartDate =
+              (data['notes']['notesStartDate'] as Timestamp?)?.toDate() ??
+                  DateTime.now();
+          tempNotesEndDate =
+              (data['notes']['notesEndDate'] as Timestamp?)?.toDate() ??
+                  DateTime.now();
+          tempShortNote = data['notes']['shortNote'] ?? '';
+          tempReview = data['notes']['review'] ?? '';
+          tempIsFavorite = data['notes']['isFavorite'] ?? false;
+
+          // Simpan data awal
+          initialNotesStartDate = tempNotesStartDate;
+          initialNotesEndDate = tempNotesEndDate;
+          initialShortNote = tempShortNote;
+          initialReview = tempReview;
+          initialIsFavorite = tempIsFavorite;
+        }
       });
     }
   }
@@ -93,7 +191,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
         actions: [
           TextButton(
             onPressed: () {
-              // Kembalikan data ke awal
+              // Rollback semua data ke awal
               setState(() {
                 tempTitle = initialTitle;
                 tempAuthor = initialAuthor;
@@ -101,6 +199,21 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 tempDescription = initialDescription;
                 tempCategory = initialCategory;
                 tempStatus = initialStatus;
+
+                // Rollback notes
+                tempNotesStartDate = initialNotesStartDate;
+                tempNotesEndDate = initialNotesEndDate;
+                tempShortNote = initialShortNote;
+                tempReview = initialReview;
+                tempIsFavorite = initialIsFavorite;
+
+                // Perbarui controller untuk memastikan tampilan sinkron
+                notesStartDateController.text =
+                    DateFormat('dd-MM-yyyy').format(tempNotesStartDate);
+                notesEndDateController.text =
+                    DateFormat('dd-MM-yyyy').format(tempNotesEndDate);
+                shortNoteController.text = tempShortNote;
+                reviewController.text = tempReview;
               });
               Navigator.pop(context, false); // Tutup dialog
             },
@@ -120,7 +233,6 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Future<void> _saveBook() async {
-    // Gunakan variabel sementara untuk menyimpan perubahan
     await _firestore.collection('books').doc(widget.bookId).update({
       'title': tempTitle,
       'author': tempAuthor,
@@ -129,16 +241,29 @@ class _BookDetailPageState extends State<BookDetailPage> {
       'category': tempCategory,
       'status': tempStatus,
       'imagePath': imagePath,
+      'notes': {
+        'notesStartDate': Timestamp.fromDate(tempNotesStartDate),
+        'notesEndDate': Timestamp.fromDate(tempNotesEndDate),
+        'shortNote': tempShortNote,
+        'review': tempReview,
+        'isFavorite': tempIsFavorite,
+      },
     });
 
     setState(() {
-      // Update variabel utama setelah data disimpan
+      // Perbarui data utama setelah menyimpan
       _titleController.text = tempTitle;
       _authorController.text = tempAuthor;
       _publisherController.text = tempPublisher;
       _descriptionController.text = tempDescription;
       selectedCategory = tempCategory;
       selectedStatus = tempStatus;
+      notesStartDate = tempNotesStartDate;
+      notesEndDate = tempNotesEndDate;
+      shortNote = tempShortNote;
+      review = tempReview;
+      isFavorite = tempIsFavorite;
+
       isEditing = false; // Keluar dari mode editing
     });
   }
@@ -212,7 +337,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           style: const TextStyle(
                             fontFamily: 'BeVietnamPro',
                             fontSize: 18,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
                             color: Color(0xFF7B7B7D),
                           ),
                         ),
@@ -222,8 +347,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           style: const TextStyle(
                             fontFamily: 'BeVietnamPro',
                             fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xFF7B7B7D),
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF918674),
                           ),
                         ),
                         Text(
@@ -231,8 +356,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           style: const TextStyle(
                             fontFamily: 'BeVietnamPro',
                             fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xFF7B7B7D),
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF918674),
                           ),
                         ),
                         Text(
@@ -240,8 +365,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           style: const TextStyle(
                             fontFamily: 'BeVietnamPro',
                             fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: Color(0xFF7B7B7D),
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF918674),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -263,7 +388,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             style: const TextStyle(
                               fontFamily: 'BeVietnamPro',
                               fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                              fontWeight: FontWeight.w400,
                               color: Colors.white,
                             ),
                           ),
@@ -339,14 +464,71 @@ class _BookDetailPageState extends State<BookDetailPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const CustomTextField(
-            label: 'Starting Reading on', hintText: 'dd-mm-yyyy'),
-        const CustomTextField(
-            label: 'Finished Reading on', hintText: 'dd-mm-yyyy'),
-        const CustomTextField(
-            label: 'Short Note', hintText: 'Enter Notes', maxLines: 3),
-        const CustomTextField(
-            label: 'Review', hintText: 'Enter Review', maxLines: 3),
+        CustomTextField(
+          label: 'Starting Reading on',
+          hintText: 'dd-mm-yyyy',
+          controller: notesStartDateController,
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: tempNotesStartDate,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+            );
+            if (pickedDate != null) {
+              setState(() {
+                tempNotesStartDate = pickedDate; // Perbarui nilai sementara
+                notesStartDateController.text = DateFormat('dd-MM-yyyy')
+                    .format(pickedDate); // Sinkron controller
+              });
+            }
+          },
+          readOnly:
+              true, // Membuat TextField hanya dapat diisi melalui DatePicker
+        ),
+        CustomTextField(
+          label: 'Finished Reading on',
+          hintText: 'dd-mm-yyyy',
+          controller: notesEndDateController,
+          onTap: () async {
+            DateTime? pickedDate = await showDatePicker(
+              context: context,
+              initialDate: tempNotesEndDate,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+            );
+            if (pickedDate != null) {
+              setState(() {
+                tempNotesEndDate = pickedDate; // Perbarui nilai sementara
+                notesEndDateController.text = DateFormat('dd-MM-yyyy')
+                    .format(pickedDate); // Sinkron controller
+              });
+            }
+          },
+          readOnly: true,
+        ),
+        CustomTextField(
+          label: 'Short Note',
+          hintText: 'Enter Notes',
+          controller: shortNoteController,
+          maxLines: 3,
+          onChanged: (value) {
+            setState(() {
+              tempShortNote = value; // Simpan di variabel sementara
+            });
+          },
+        ),
+        CustomTextField(
+          label: 'Review',
+          hintText: 'Enter Review',
+          controller: reviewController,
+          maxLines: 3,
+          onChanged: (value) {
+            setState(() {
+              tempReview = value; // Simpan di variabel sementara
+            });
+          },
+        ),
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -356,17 +538,35 @@ class _BookDetailPageState extends State<BookDetailPage> {
               style: TextStyle(
                 fontFamily: 'BeVietnamPro',
                 fontSize: 14,
+                fontWeight: FontWeight.w500,
                 color: Color(0xFF7B7B7D),
               ),
             ),
-            Switch(value: false, onChanged: (val) {}),
+            Switch(
+              value: tempIsFavorite,
+              onChanged: (val) async {
+                setState(() {
+                  tempIsFavorite = val; // Simpan status sementara
+                });
+
+                // Perbarui Firestore jika diperlukan
+                await _firestore.collection('books').doc(widget.bookId).update({
+                  'notes.isFavorite': tempIsFavorite,
+                });
+              },
+              activeColor: const Color(0xFF918674), // Warna saat aktif (ON)
+              inactiveThumbColor:
+                  Colors.grey, // Warna tombol saat tidak aktif (opsional)
+              inactiveTrackColor: Colors
+                  .grey.shade300, // Warna lintasan saat tidak aktif (opsional)
+            ),
           ],
         ),
         const SizedBox(height: 16),
         Center(
           child: ElevatedButton(
             onPressed: () {
-              // Simpan data
+              _confirmAndSaveBook(); // Gunakan fungsi konfirmasi
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFC1B6A3),
@@ -442,7 +642,25 @@ class _BookDetailPageState extends State<BookDetailPage> {
             'Children’s Books',
             'Graphic Novels & Comics',
           ],
-          value: tempCategory,
+          value: [
+            'Fiction',
+            'Non-Fiction',
+            'Self-Help & Personal Development',
+            'Business & Finance',
+            'Science & Technology',
+            'Health & Wellness',
+            'Biography & Memoir',
+            'History',
+            'Religion & Spirituality',
+            'Education & Reference',
+            'Art & Design',
+            'Travel & Adventure',
+            'Poetry',
+            'Children’s Books',
+            'Graphic Novels & Comics',
+          ].contains(tempCategory) // Periksa apakah nilai ada dalam daftar
+              ? tempCategory
+              : 'Fiction', // Fallback jika nilai tidak valid
           onChanged: (value) {
             setState(() {
               tempCategory = value!;

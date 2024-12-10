@@ -7,6 +7,8 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller; // Dapat berupa null
   final int maxLines;
+  final VoidCallback? onTap; // Tambahkan onTap
+  final bool readOnly; // Tambahkan readOnly
   final ValueChanged<String>? onChanged; // Tambahkan properti onChanged
 
   const CustomTextField({
@@ -15,6 +17,8 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     this.controller, // Tetap opsional
     this.maxLines = 1,
+    this.onTap, // Tambahkan ke konstruktor
+    this.readOnly = false, // Tambahkan ke konstruktor
     this.onChanged, // Tambahkan onChanged ke konstruktor
   }) : super(key: key);
 
@@ -38,7 +42,9 @@ class CustomTextField extends StatelessWidget {
           TextField(
             controller: controller, // Gunakan nilai opsional
             maxLines: maxLines,
-            onChanged: onChanged, // Panggil onChanged 
+            onTap: onTap, // Gunakan onTap di TextField
+            readOnly: readOnly, // Gunakan readOnly di TextField
+            onChanged: onChanged, // Panggil onChanged
             decoration: InputDecoration(
               filled: true,
               fillColor: const Color(0xFFE1DACA), // Warna latar belakang kotak
