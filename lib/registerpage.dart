@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fp_kelompok3/profilepage.dart';
+import 'auth_service.dart';
 import 'loginpage.dart';
 import 'profilepage.dart';
 
@@ -117,8 +118,38 @@ class _RegisterPageState extends State<RegisterPage> {
     },
   );
 }
-
-
+      {bool isSuccess = false}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                if (isSuccess) {
+                  // Ubah tujuan navigasi ke ProfilePage
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProfilePage(
+                        username: usernameController.text.trim(),
+                        email: emailController.text.trim(),
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(

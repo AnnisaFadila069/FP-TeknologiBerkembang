@@ -57,33 +57,70 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    // Kembali ke UI asli Anda. Tambahkan logika saat tombol **Save** ditekan:
-    return Scaffold(
-      backgroundColor: Color(0xFFF5F5EB),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Bagian atas: Tombol back dan Profile
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.black),
-                  onPressed: () => Navigator.pop(context),
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: Color(0xFFF5F5EB),
+    body: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Bagian atas: Tombol back dan Profile
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.pop(context),
+              ),
+              SizedBox(width: 10),
+              Text(
+                'Profile',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
-                SizedBox(width: 10),
-                Text(
-                  'Profile',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+
+          // Foto Profil
+          Center(
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  radius: 70,
+                  backgroundColor: Color(0xFFB3907A), // Warna bingkai
+                  child: CircleAvatar(
+                    radius: 66,
+                    backgroundImage: AssetImage('Image/profile.jpg'), // Ganti dengan URL gambar Anda
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  right: 4,
+                  child: GestureDetector(
+                    onTap: () {
+                      // Logic for editing profile picture
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFB3907A),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.edit,
+                        color: Color(0xFFF5F5EB),
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
+          ),
             SizedBox(height: 20),
             // Form input sesuai UI Anda
             _buildLabeledFormField('Full Name', fullNameController),
@@ -154,44 +191,87 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildDateOfBirthField() {
-    return TextField(
-      controller: dateOfBirthController,
-      readOnly: true,
-      decoration: InputDecoration(
-        labelText: 'Date of Birth',
-        suffixIcon: IconButton(
-          icon: Icon(Icons.calendar_today),
-          onPressed: () async {
-            DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: DateTime.now(),
-              firstDate: DateTime(1900),
-              lastDate: DateTime.now(),
-            );
-            if (pickedDate != null) {
-              setState(() {
-                dateOfBirthController.text = "${pickedDate.toLocal()}".split(' ')[0];
-              });
-            }
-          },
+Widget _buildDateOfBirthField() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'Date of Birth',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Color(0xFFB3907A),
         ),
       ),
-    );
-  }
+      TextField(
+        controller: dateOfBirthController,
+        readOnly: true,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Color(0xFFF5F5EB), // Warna yang sama
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          suffixIcon: IconButton(
+            icon: Icon(Icons.calendar_today, color: Color(0xFFB3907A)), // Warna ikon
+            onPressed: () async {
+              DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+              );
+              if (pickedDate != null) {
+                setState(() {
+                  dateOfBirthController.text =
+                      "${pickedDate.toLocal()}".split(' ')[0];
+                });
+              }
+            },
+          ),
+        ),
+      ),
+      Divider(color: Color(0xFFB3907A)), // Garis pembatas
+    ],
+  );
+}
 
   Widget _buildGenderDropdown() {
-    return DropdownButtonFormField<String>(
-      value: selectedGender,
-      items: ['Male', 'Female'].map((gender) {
-        return DropdownMenuItem(value: gender, child: Text(gender));
-      }).toList(),
-      onChanged: (value) {
-        setState(() {
-          if (value != null) selectedGender = value;
-        });
-      },
-      decoration: InputDecoration(labelText: 'Gender'),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Gender',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFFB3907A),
+          ),
+        ),
+        DropdownButtonFormField<String>(
+          value: selectedGender,
+          items: ['Male', 'Female'].map((gender) {
+            return DropdownMenuItem(value: gender, child: Text(gender));
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              if (value != null) selectedGender = value;
+            });
+          },
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: Color(0xFFF5F5EB), // Warna yang sama
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          ),
+          dropdownColor: Color(0xFFF5F5EB), // Warna dropdown
+          style: TextStyle(
+            color: Colors.brown, // Warna teks dropdown
+            fontSize: 14,
+          ),
+          icon: Icon(Icons.arrow_drop_down, color: Color(0xFFB3907A)), // Warna ikon
+        ),
+        Divider(color: Color(0xFFB3907A)), // Garis pembatas
+      ],
     );
   }
 }
