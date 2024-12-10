@@ -14,10 +14,25 @@ class BookDetailPage extends StatefulWidget {
 class _BookDetailPageState extends State<BookDetailPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  //variabel sementara
+  late String tempTitle;
+  late String tempAuthor;
+  late String tempPublisher;
+  late String tempDescription;
+  late String tempCategory;
+  late String tempStatus;
+
   late TextEditingController _titleController;
   late TextEditingController _authorController;
   late TextEditingController _publisherController;
   late TextEditingController _descriptionController;
+
+  late String initialTitle;
+  late String initialAuthor;
+  late String initialPublisher;
+  late String initialDescription;
+  late String initialCategory;
+  late String initialStatus;
 
   bool isEditing = false;
   String selectedCategory = 'Fiction';
@@ -37,7 +52,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Future<void> _loadBookDetails() async {
-    final bookData = await _firestore.collection('books').doc(widget.bookId).get();
+    final bookData =
+        await _firestore.collection('books').doc(widget.bookId).get();
     final data = bookData.data();
     if (data != null) {
       setState(() {
@@ -48,22 +64,82 @@ class _BookDetailPageState extends State<BookDetailPage> {
         selectedCategory = data['category'] ?? 'Fiction';
         selectedStatus = data['status'] ?? 'Haven’t Read';
         imagePath = data['imagePath'] ?? '';
+
+        // Inisialisasi variabel sementara
+        tempTitle = _titleController.text;
+        tempAuthor = _authorController.text;
+        tempPublisher = _publisherController.text;
+        tempDescription = _descriptionController.text;
+        tempCategory = selectedCategory;
+        tempStatus = selectedStatus;
+
+        // Simpan data awal
+        initialTitle = _titleController.text;
+        initialAuthor = _authorController.text;
+        initialPublisher = _publisherController.text;
+        initialDescription = _descriptionController.text;
+        initialCategory = selectedCategory;
+        initialStatus = selectedStatus;
       });
     }
   }
 
+  Future<void> _confirmAndSaveBook() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Changes'),
+        content: const Text('Are you sure you want to save the changes?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Kembalikan data ke awal
+              setState(() {
+                tempTitle = initialTitle;
+                tempAuthor = initialAuthor;
+                tempPublisher = initialPublisher;
+                tempDescription = initialDescription;
+                tempCategory = initialCategory;
+                tempStatus = initialStatus;
+              });
+              Navigator.pop(context, false); // Tutup dialog
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      _saveBook();
+    }
+  }
+
   Future<void> _saveBook() async {
+    // Gunakan variabel sementara untuk menyimpan perubahan
     await _firestore.collection('books').doc(widget.bookId).update({
-      'title': _titleController.text,
-      'author': _authorController.text,
-      'publisher': _publisherController.text,
-      'description': _descriptionController.text,
-      'category': selectedCategory,
-      'status': selectedStatus,
+      'title': tempTitle,
+      'author': tempAuthor,
+      'publisher': tempPublisher,
+      'description': tempDescription,
+      'category': tempCategory,
+      'status': tempStatus,
       'imagePath': imagePath,
     });
+
     setState(() {
-      isEditing = false;
+      // Update variabel utama setelah data disimpan
+      _titleController.text = tempTitle;
+      _authorController.text = tempAuthor;
+      _publisherController.text = tempPublisher;
+      _descriptionController.text = tempDescription;
+      selectedCategory = tempCategory;
+      selectedStatus = tempStatus;
+      isEditing = false; // Keluar dari mode editing
     });
   }
 
@@ -75,9 +151,9 @@ class _BookDetailPageState extends State<BookDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5EB),
+      backgroundColor: const Color(0xFFF9F5EE),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5EB),
+        backgroundColor: const Color(0xFFF9F5EE),
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -137,7 +213,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             fontFamily: 'BeVietnamPro',
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
-                            color: Colors.black,
+                            color: Color(0xFF7B7B7D),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -147,7 +223,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             fontFamily: 'BeVietnamPro',
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                            color: Color(0xFF7B7B7D),
                           ),
                         ),
                         Text(
@@ -156,7 +232,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             fontFamily: 'BeVietnamPro',
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                            color: Color(0xFF7B7B7D),
                           ),
                         ),
                         Text(
@@ -165,7 +241,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             fontFamily: 'BeVietnamPro',
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
-                            color: Colors.black,
+                            color: Color(0xFF7B7B7D),
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -280,7 +356,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
               style: TextStyle(
                 fontFamily: 'BeVietnamPro',
                 fontSize: 14,
-                color: Colors.black,
+                color: Color(0xFF7B7B7D),
               ),
             ),
             Switch(value: false, onChanged: (val) {}),
@@ -314,101 +390,155 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Widget _buildEditForm() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CustomTextField(
-        label: 'Title',
-        hintText: _titleController.text,
-        controller: _titleController,
-      ),
-      CustomTextField(
-        label: 'Author',
-        hintText: _authorController.text,
-        controller: _authorController,
-      ),
-      CustomTextField(
-        label: 'Publisher',
-        hintText: _publisherController.text,
-        controller: _publisherController,
-      ),
-      CustomDropdown(
-        label: 'Categories',
-        items: ['Fiction',
-                'Non-Fiction',
-                'Self-Help & Personal Development',
-                'Business & Finance',
-                'Science & Technology',
-                'Health & Wellness',
-                'Biography & Memoir',
-                'History',
-                'Religion & Spirituality',
-                'Education & Reference',
-                'Art & Design',
-                'Travel & Adventure',
-                'Poetry',
-                'Children’s Books',
-                'Graphic Novels & Comics',],
-        value: ['Fiction',
-                'Non-Fiction',
-                'Self-Help & Personal Development',
-                'Business & Finance',
-                'Science & Technology',
-                'Health & Wellness',
-                'Biography & Memoir',
-                'History',
-                'Religion & Spirituality',
-                'Education & Reference',
-                'Art & Design',
-                'Travel & Adventure',
-                'Poetry',
-                'Children’s Books',
-                'Graphic Novels & Comics',].contains(selectedCategory)
-            ? selectedCategory
-            : 'Fiction', // Fallback jika value tidak valid
-        onChanged: (value) {
-          setState(() {
-            selectedCategory = value!;
-          });
-        },
-      ),
-      CustomDropdown(
-        label: 'Status',
-        items: ['Haven’t Read', 'Reading', 'Finished'],
-        value: ['Haven’t Read', 'Reading', 'Finished'].contains(selectedStatus)
-            ? selectedStatus
-            : 'Haven’t Read', // Fallback jika value tidak valid
-        onChanged: (value) {
-          setState(() {
-            selectedStatus = value!;
-          });
-        },
-      ),
-      CustomTextField(
-        label: 'Description',
-        hintText: _descriptionController.text,
-        controller: _descriptionController,
-        maxLines: 4,
-      ),
-      const SizedBox(height: 16),
-      Center(
-        child: ElevatedButton(
-          onPressed: _saveBook,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFC1B6A3),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-          ),
-          child: const Text(
-            'SAVE',
-            style: TextStyle(
-              fontFamily: 'BeVietnamPro',
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextField(
+          label: 'Title',
+          hintText: tempTitle,
+          controller: TextEditingController(text: tempTitle),
+          onChanged: (value) {
+            setState(() {
+              tempTitle = value;
+            });
+          },
+        ),
+        CustomTextField(
+          label: 'Author',
+          hintText: tempAuthor,
+          controller: TextEditingController(text: tempAuthor),
+          onChanged: (value) {
+            setState(() {
+              tempAuthor = value;
+            });
+          },
+        ),
+        CustomTextField(
+          label: 'Publisher',
+          hintText: tempPublisher,
+          controller: TextEditingController(text: tempPublisher),
+          onChanged: (value) {
+            setState(() {
+              tempPublisher = value;
+            });
+          },
+        ),
+        CustomDropdown(
+          label: 'Categories',
+          items: [
+            'Fiction',
+            'Non-Fiction',
+            'Self-Help & Personal Development',
+            'Business & Finance',
+            'Science & Technology',
+            'Health & Wellness',
+            'Biography & Memoir',
+            'History',
+            'Religion & Spirituality',
+            'Education & Reference',
+            'Art & Design',
+            'Travel & Adventure',
+            'Poetry',
+            'Children’s Books',
+            'Graphic Novels & Comics',
+          ],
+          value: tempCategory,
+          onChanged: (value) {
+            setState(() {
+              tempCategory = value!;
+            });
+          },
+        ),
+        CustomDropdown(
+          label: 'Status',
+          items: ['Haven’t Read', 'Reading', 'Finished'],
+          value: tempStatus,
+          onChanged: (value) {
+            setState(() {
+              tempStatus = value!;
+            });
+          },
+        ),
+        CustomTextField(
+          label: 'Description',
+          hintText: tempDescription,
+          controller: TextEditingController(text: tempDescription),
+          maxLines: 4,
+          onChanged: (value) {
+            setState(() {
+              tempDescription = value;
+            });
+          },
+        ),
+        const SizedBox(height: 16),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Confirm Deletion'),
+                      content: const Text(
+                          'Are you sure you want to delete this book?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
+
+                  if (confirm == true) {
+                    await _deleteBook();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text(
+                  'DELETE',
+                  style: TextStyle(
+                    fontFamily: 'BeVietnamPro',
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(width: 16), // Spasi antara tombol
+              ElevatedButton(
+                onPressed:
+                    _confirmAndSaveBook, // Memanggil logika konfirmasi simpan
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFC1B6A3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text(
+                  'SAVE',
+                  style: TextStyle(
+                    fontFamily: 'BeVietnamPro',
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
