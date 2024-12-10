@@ -5,47 +5,48 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final String label;
   final String hintText;
+  final TextEditingController? controller; // Dapat berupa null
   final int maxLines;
 
   const CustomTextField({
-    super.key,
+    Key? key,
     required this.label,
     required this.hintText,
+    this.controller, // Tetap opsional
     this.maxLines = 1,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontFamily: 'BeVietnamPro',
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: 'BeVietnamPro',
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: Colors.black,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller, // Gunakan nilai opsional
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: hintText,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
             ),
           ),
-          const SizedBox(height: 4),
-          TextField(
-            maxLines: maxLines,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: const Color(0xFFE1DACA),
-              hintText: hintText,
-              hintStyle: const TextStyle(color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }

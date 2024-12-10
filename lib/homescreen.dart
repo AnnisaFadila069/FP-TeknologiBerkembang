@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'auth_service.dart'; // Pastikan ini adalah jalur yang benar ke auth_service.dart
-import 'loginpage.dart'; // Pastikan ini adalah jalur yang benar ke login_page.dart
-import 'add_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'detail_edit.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'loginpage.dart';
+import 'add_page.dart'; // Import AddPage for navigation
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final PageController _pageController = PageController(viewportFraction: 0.9);
-  final AuthService _authService = AuthService(); // Instance AuthService
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance; // FirebaseAuth instance for logout
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFDF6EC),
+      backgroundColor: const Color(0xFFEFE7DA),
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Menghilangkan tombol back
-        backgroundColor: const Color(0xFFF5F5EB),
+        backgroundColor: const Color(0xFFEFE7DA),
         elevation: 0,
+        automaticallyImplyLeading: false, // This removes the back button
+        toolbarHeight: 60,
         title: Row(
           children: [
             Image.asset(
@@ -32,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 48,
               height: 48,
             ),
-            const SizedBox(width: 8),
-            const Text(
+            SizedBox(width: 8.0),
+            Text(
               'BookMate',
               style: TextStyle(
                 fontSize: 24,
@@ -48,10 +48,10 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.logout, color: Color(0xFF6D4C41)),
             onPressed: () async {
               try {
-                await _authService.signout(); // Menggunakan AuthService untuk logout
+                await _auth.signOut(); // Using FirebaseAuth to sign out
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to LoginPage after logout
                   (Route<dynamic> route) => false,
                 );
               } catch (e) {
@@ -60,248 +60,142 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               }
             },
+            padding: const EdgeInsets.only(right: 16.0),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _firestore.collection('books').orderBy('created_at', descending: true).snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const Center(child: Text('An error occurred. Please try again.'));
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No books available.'));
+          }
+
+          final books = snapshot.data!.docs;
+          final latestBooks = books.take(3).toList(); // 3 buku terbaru
+          final booksByCategory = _groupBooksByCategory(books);
+
+          return ListView(
             children: [
               // Search Bar
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFD9C6AB),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: const TextField(
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
                   decoration: InputDecoration(
                     hintText: 'Search',
-                    border: InputBorder.none,
-                    icon: Icon(Icons.search, color: Colors.brown),
+                    filled: true,
+                    fillColor: const Color(0xFFC1B6A3),
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              // Slider untuk 3 buku terbaru
+              _buildLatestBooksSlider(latestBooks),
+              const SizedBox(height: 16.0),
+              // Buku berdasarkan kategori
+              ...booksByCategory.entries.map((entry) {
+                final category = entry.key;
+                final categoryBooks = entry.value;
 
-              // Featured Section
-              SizedBox(
-                height: 220,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: 3, // Number of items in the PageView
-                  itemBuilder: (context, index) {
-                    final featuredBooks = [
-                      {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
-                      {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
-                      {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
-                    ];
-
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => BookDetailPage(
-                              bookTitle: featuredBooks[index]['title']!,
-                              bookImagePath: featuredBooks[index]['image']!,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          color: const Color(0xFFD9C6AB),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Row(
-                              children: [
-                                Container(
-                                  height: 150,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    image: DecorationImage(
-                                      image: AssetImage(featuredBooks[index]['image']!),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        featuredBooks[index]['title']!,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.brown,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      const Text(
-                                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tempus egestas velit.',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.black54,
-                                        ),
-                                        maxLines: 3,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Page Indicator
-              Center(
-                child: SmoothPageIndicator(
-                  controller: _pageController,
-                  count: 3,
-                  effect: const ExpandingDotsEffect(
-                    activeDotColor: Colors.brown,
-                    dotColor: Color(0xFFD9C6AB),
-                    dotHeight: 8,
-                    dotWidth: 8,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Categories
-              const SectionTitle(title: 'Horror'),
-              const HorizontalBookList(books: [
-                {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
-                {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
-                {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
-                {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
-                {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
-                {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
-              ]),
-              const SizedBox(height: 16),
-              const SectionTitle(title: 'Historical Fiction'),
-              const HorizontalBookList(books: [
-                {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa','image': 'Image/anak_semua_bangsa_cover.jpg'},
-                {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
-                {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
-                {'title': 'Anak Semua Bangsa','image': 'Image/anak_semua_bangsa_cover.jpg'},
-                {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
-              ]),
+                return _buildCategorySection(category, categoryBooks);
+              }).toList(),
             ],
-          ),
-        ),
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const AddPage()),
+            MaterialPageRoute(builder: (context) => const AddPage()), // Navigate to AddPage
           );
         },
-        backgroundColor: Colors.brown,
-        child: const Icon(Icons.add, color: Colors.white),
+        backgroundColor: const Color(0xFFC1B6A3),
+        child: const Icon(Icons.add),
       ),
     );
   }
-}
 
-/// Widget untuk judul section
-class SectionTitle extends StatelessWidget {
-  final String title;
-
-  const SectionTitle({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.brown,
-        ),
-      ),
-    );
-  }
-}
-
-/// Widget untuk daftar horizontal buku
-class HorizontalBookList extends StatelessWidget {
-  final List<Map<String, String>> books;
-
-  const HorizontalBookList({super.key, required this.books});
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildLatestBooksSlider(List<QueryDocumentSnapshot> books) {
     return SizedBox(
-      height: 200,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
+      height: 250,
+      child: PageView.builder(
         itemCount: books.length,
+        controller: PageController(viewportFraction: 0.9),
         itemBuilder: (context, index) {
+          final book = books[index].data() as Map<String, dynamic>;
+
           return GestureDetector(
             onTap: () {
+              // Navigasi ke halaman detail
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BookDetailPage(
-                    bookTitle: books[index]['title']!,
-                    bookImagePath: books[index]['image']!,
-                  ),
+                  builder: (context) => BookDetailPage(bookId: books[index].id),
                 ),
               );
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: SizedBox(
-                width: 100,
-                child: Column(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFFC1B6A3),
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Row(
                   children: [
+                    // Gambar Buku
                     Container(
-                      height: 120,
-                      width: 80,
+                      width: 100,
+                      margin: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          image: AssetImage(books[index]['image']!),
-                          fit: BoxFit.cover,
-                        ),
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: const Center(
+                        child: Icon(Icons.book, size: 50, color: Colors.brown), // Ikon default
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      height: 40,
-                      child: Text(
-                        books[index]['title']!,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.brown,
+                    // Detail Buku
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              book['title'] ?? 'No Title',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.brown,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              book['description'] ?? 'No Description',
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ],
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
                       ),
                     ),
                   ],
@@ -312,5 +206,87 @@ class HorizontalBookList extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget _buildCategorySection(String category, List<QueryDocumentSnapshot> books) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            category,
+            style: const TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          SizedBox(
+            height: 150,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: books.length,
+              itemBuilder: (context, index) {
+                final book = books[index].data() as Map<String, dynamic>;
+
+                return GestureDetector(
+                  onTap: () {
+                    // Navigasi ke halaman detail
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BookDetailPage(bookId: books[index].id),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300], // Warna placeholder
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.book, size: 40), // Ikon default
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Text(
+                          book['title'] ?? 'No Title',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 12.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Map<String, List<QueryDocumentSnapshot>> _groupBooksByCategory(List<QueryDocumentSnapshot> books) {
+    final Map<String, List<QueryDocumentSnapshot>> booksByCategory = {};
+
+    for (var book in books) {
+      final data = book.data() as Map<String, dynamic>;
+      final category = data['categories'] ?? 'Uncategorized';
+
+      if (!booksByCategory.containsKey(category)) {
+        booksByCategory[category] = [];
+      }
+      booksByCategory[category]!.add(book);
+    }
+
+    return booksByCategory;
   }
 }
