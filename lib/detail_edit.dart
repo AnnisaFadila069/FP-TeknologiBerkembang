@@ -589,177 +589,177 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-  Widget _buildEditForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomTextField(
-          label: 'Title',
-          hintText: tempTitle,
-          controller: TextEditingController(text: tempTitle),
-          onChanged: (value) {
-            setState(() {
-              tempTitle = value;
-            });
-          },
-        ),
-        CustomTextField(
-          label: 'Author',
-          hintText: tempAuthor,
-          controller: TextEditingController(text: tempAuthor),
-          onChanged: (value) {
-            setState(() {
-              tempAuthor = value;
-            });
-          },
-        ),
-        CustomTextField(
-          label: 'Publisher',
-          hintText: tempPublisher,
-          controller: TextEditingController(text: tempPublisher),
-          onChanged: (value) {
-            setState(() {
-              tempPublisher = value;
-            });
-          },
-        ),
-        CustomDropdown(
-          label: 'Categories',
-          items: [
-            'Fiction',
-            'Non-Fiction',
-            'Self-Help & Personal Development',
-            'Business & Finance',
-            'Science & Technology',
-            'Health & Wellness',
-            'Biography & Memoir',
-            'History',
-            'Religion & Spirituality',
-            'Education & Reference',
-            'Art & Design',
-            'Travel & Adventure',
-            'Poetry',
-            'Children’s Books',
-            'Graphic Novels & Comics',
-          ],
-          value: [
-            'Fiction',
-            'Non-Fiction',
-            'Self-Help & Personal Development',
-            'Business & Finance',
-            'Science & Technology',
-            'Health & Wellness',
-            'Biography & Memoir',
-            'History',
-            'Religion & Spirituality',
-            'Education & Reference',
-            'Art & Design',
-            'Travel & Adventure',
-            'Poetry',
-            'Children’s Books',
-            'Graphic Novels & Comics',
-          ].contains(tempCategory) // Periksa apakah nilai ada dalam daftar
-              ? tempCategory
-              : 'Fiction', // Fallback jika nilai tidak valid
-          onChanged: (value) {
-            setState(() {
-              tempCategory = value!;
-            });
-          },
-        ),
-        CustomDropdown(
-          label: 'Status',
-          items: ['Haven’t Read', 'Reading', 'Finished'],
-          value: tempStatus,
-          onChanged: (value) {
-            setState(() {
-              tempStatus = value!;
-            });
-          },
-        ),
-        CustomTextField(
-          label: 'Description',
-          hintText: tempDescription,
-          controller: TextEditingController(text: tempDescription),
-          maxLines: 4,
-          onChanged: (value) {
-            setState(() {
-              tempDescription = value;
-            });
-          },
-        ),
-        const SizedBox(height: 16),
-        Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () async {
-                  final confirm = await showDialog<bool>(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Confirm Deletion'),
-                      content: const Text(
-                          'Are you sure you want to delete this book?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Cancel'),
-                        ),
-                        TextButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: const Text('Delete'),
-                        ),
-                      ],
-                    ),
-                  );
+Widget _buildEditForm() {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CustomTextField(
+        label: 'Title',
+        hintText: tempTitle,
+        controller: TextEditingController(text: tempTitle),
+        onChanged: (value) {
+          setState(() {
+            tempTitle = value;
+          });
+        },
+      ),
+      CustomTextField(
+        label: 'Author',
+        hintText: tempAuthor,
+        controller: TextEditingController(text: tempAuthor),
+        onChanged: (value) {
+          setState(() {
+            tempAuthor = value;
+          });
+        },
+      ),
+      CustomTextField(
+        label: 'Publisher',
+        hintText: tempPublisher,
+        controller: TextEditingController(text: tempPublisher),
+        onChanged: (value) {
+          setState(() {
+            tempPublisher = value;
+          });
+        },
+      ),
+      CustomDropdown(
+        label: 'Categories',
+        items: [
+          'Fiction',
+          'Non-Fiction',
+          'Self-Help & Personal Development',
+          'Business & Finance',
+          'Science & Technology',
+          'Health & Wellness',
+          'Biography & Memoir',
+          'History',
+          'Religion & Spirituality',
+          'Education & Reference',
+          'Art & Design',
+          'Travel & Adventure',
+          'Poetry',
+          'Children’s Books',
+          'Graphic Novels & Comics',
+        ],
+        value: [
+          'Fiction',
+          'Non-Fiction',
+          'Self-Help & Personal Development',
+          'Business & Finance',
+          'Science & Technology',
+          'Health & Wellness',
+          'Biography & Memoir',
+          'History',
+          'Religion & Spirituality',
+          'Education & Reference',
+          'Art & Design',
+          'Travel & Adventure',
+          'Poetry',
+          'Children’s Books',
+          'Graphic Novels & Comics',
+        ].contains(tempCategory) 
+          ? tempCategory 
+          : 'Fiction', // Fallback jika nilai tidak valid
+        onChanged: (value) {
+          setState(() {
+            tempCategory = value!;
+          });
+        },
+      ),
+      CustomDropdown(
+        label: 'Status',
+        items: ['Haven’t Read', 'Reading', 'Finished'],
+        value: ['Haven’t Read', 'Reading', 'Finished'].contains(tempStatus) 
+          ? tempStatus 
+          : 'Reading', // Fallback jika nilai tidak valid
+        onChanged: (value) {
+          setState(() {
+            tempStatus = value!;
+          });
+        },
+      ),
+      CustomTextField(
+        label: 'Description',
+        hintText: tempDescription,
+        controller: TextEditingController(text: tempDescription),
+        maxLines: 4,
+        onChanged: (value) {
+          setState(() {
+            tempDescription = value;
+          });
+        },
+      ),
+      const SizedBox(height: 16),
+      Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Confirm Deletion'),
+                    content: const Text(
+                        'Are you sure you want to delete this book?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, false),
+                        child: const Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, true),
+                        child: const Text('Delete'),
+                      ),
+                    ],
+                  ),
+                );
 
-                  if (confirm == true) {
-                    await _deleteBook();
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                if (confirm == true) {
+                  await _deleteBook();
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text(
-                  'DELETE',
-                  style: TextStyle(
-                    fontFamily: 'BeVietnamPro',
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              ),
+              child: const Text(
+                'DELETE',
+                style: TextStyle(
+                  fontFamily: 'BeVietnamPro',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(width: 16), // Spasi antara tombol
-              ElevatedButton(
-                onPressed:
-                    _confirmAndSaveBook, // Memanggil logika konfirmasi simpan
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFC1B6A3),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            ),
+            const SizedBox(width: 16), // Spasi antara tombol
+            ElevatedButton(
+              onPressed: _confirmAndSaveBook, // Memanggil logika konfirmasi simpan
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFFC1B6A3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text(
-                  'SAVE',
-                  style: TextStyle(
-                    fontFamily: 'BeVietnamPro',
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              ),
+              child: const Text(
+                'SAVE',
+                style: TextStyle(
+                  fontFamily: 'BeVietnamPro',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
+
 }
