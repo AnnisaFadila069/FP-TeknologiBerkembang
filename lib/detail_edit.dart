@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'custom_widgets.dart'; // Pastikan file ini berisi widget CustomTextField & CustomDropdown
+import 'custom_widgets.dart';
 
 class BookDetailPage extends StatefulWidget {
   final String bookId;
@@ -314,79 +314,102 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Widget _buildEditForm() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomTextField(
-            label: 'Title', hintText: _titleController.text, controller: _titleController),
-        CustomTextField(
-            label: 'Author', hintText: _authorController.text, controller: _authorController),
-        CustomTextField(
-            label: 'Publisher', hintText: _publisherController.text, controller: _publisherController),
-        CustomDropdown(
-          label: 'Categories',
-          items: ['Fiction', 'Non-Fiction', 'Sci-Fi'],
-          value: selectedCategory,
-          onChanged: (value) {
-            setState(() {
-              selectedCategory = value!;
-            });
-          },
-        ),
-        CustomDropdown(
-          label: 'Status',
-          items: ['Haven’t Read', 'Reading', 'Finished'],
-          value: selectedStatus,
-          onChanged: (value) {
-            setState(() {
-              selectedStatus = value!;
-            });
-          },
-        ),
-        CustomTextField(
-            label: 'Description',
-            hintText: _descriptionController.text,
-            controller: _descriptionController,
-            maxLines: 5),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(
-              onPressed: _deleteBook,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey.shade300,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'DELETE',
-                style: TextStyle(
-                  fontFamily: 'BeVietnamPro',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      CustomTextField(
+        label: 'Title',
+        hintText: _titleController.text,
+        controller: _titleController,
+      ),
+      CustomTextField(
+        label: 'Author',
+        hintText: _authorController.text,
+        controller: _authorController,
+      ),
+      CustomTextField(
+        label: 'Publisher',
+        hintText: _publisherController.text,
+        controller: _publisherController,
+      ),
+      CustomDropdown(
+        label: 'Categories',
+        items: ['Fiction',
+                'Non-Fiction',
+                'Self-Help & Personal Development',
+                'Business & Finance',
+                'Science & Technology',
+                'Health & Wellness',
+                'Biography & Memoir',
+                'History',
+                'Religion & Spirituality',
+                'Education & Reference',
+                'Art & Design',
+                'Travel & Adventure',
+                'Poetry',
+                'Children’s Books',
+                'Graphic Novels & Comics',],
+        value: ['Fiction',
+                'Non-Fiction',
+                'Self-Help & Personal Development',
+                'Business & Finance',
+                'Science & Technology',
+                'Health & Wellness',
+                'Biography & Memoir',
+                'History',
+                'Religion & Spirituality',
+                'Education & Reference',
+                'Art & Design',
+                'Travel & Adventure',
+                'Poetry',
+                'Children’s Books',
+                'Graphic Novels & Comics',].contains(selectedCategory)
+            ? selectedCategory
+            : 'Fiction', // Fallback jika value tidak valid
+        onChanged: (value) {
+          setState(() {
+            selectedCategory = value!;
+          });
+        },
+      ),
+      CustomDropdown(
+        label: 'Status',
+        items: ['Haven’t Read', 'Reading', 'Finished'],
+        value: ['Haven’t Read', 'Reading', 'Finished'].contains(selectedStatus)
+            ? selectedStatus
+            : 'Haven’t Read', // Fallback jika value tidak valid
+        onChanged: (value) {
+          setState(() {
+            selectedStatus = value!;
+          });
+        },
+      ),
+      CustomTextField(
+        label: 'Description',
+        hintText: _descriptionController.text,
+        controller: _descriptionController,
+        maxLines: 4,
+      ),
+      const SizedBox(height: 16),
+      Center(
+        child: ElevatedButton(
+          onPressed: _saveBook,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFC1B6A3),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+          ),
+          child: const Text(
+            'SAVE',
+            style: TextStyle(
+              fontFamily: 'BeVietnamPro',
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
               ),
             ),
-            ElevatedButton(
-              onPressed: _saveBook,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC1B6A3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'SAVE',
-                style: TextStyle(
-                  fontFamily: 'BeVietnamPro',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
+          ),
         ),
       ],
     );
