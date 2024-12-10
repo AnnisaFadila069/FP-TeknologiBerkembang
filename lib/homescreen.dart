@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fp_kelompok3/add_page.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'auth_service.dart'; // Pastikan ini adalah jalur yang benar ke auth_service.dart
+import 'loginpage.dart'; // Pastikan ini adalah jalur yang benar ke login_page.dart
+import 'add_page.dart';
 import 'detail_edit.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,6 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PageController _pageController = PageController(viewportFraction: 0.9);
+  final AuthService _authService = AuthService(); // Instance AuthService
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +43,25 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout, color: Color(0xFF6D4C41)),
+            onPressed: () async {
+              try {
+                await _authService.signout(); // Menggunakan AuthService untuk logout
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  (Route<dynamic> route) => false,
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Logout failed: $e")),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -71,14 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: 3, // Number of items in the PageView
                   itemBuilder: (context, index) {
                     final featuredBooks = [
-                      {
-                        'title': 'Bumi Manusia',
-                        'image': 'Image/bumi_manusia.jpg'
-                      },
-                      {
-                        'title': 'Gadis Pantai',
-                        'image': 'Image/gadis_pantai.jpg'
-                      },
+                      {'title': 'Bumi Manusia', 'image': 'Image/bumi_manusia.jpg'},
+                      {'title': 'Gadis Pantai', 'image': 'Image/gadis_pantai.jpg'},
                       {'title': 'Mangir', 'image': 'Image/mangir.jpg'},
                     ];
 
@@ -111,8 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8),
                                     image: DecorationImage(
-                                      image: AssetImage(
-                                          featuredBooks[index]['image']!),
+                                      image: AssetImage(featuredBooks[index]['image']!),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -120,16 +136,16 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         featuredBooks[index]['title']!,
                                         style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.brown),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.brown,
+                                        ),
                                       ),
                                       const SizedBox(height: 8),
                                       const Text(
@@ -184,16 +200,10 @@ class _HomeScreenState extends State<HomeScreen> {
               const SectionTitle(title: 'Historical Fiction'),
               const HorizontalBookList(books: [
                 {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
-                {
-                  'title': 'Anak Semua Bangsa',
-                  'image': 'Image/anak_semua_bangsa_cover.jpg'
-                },
+                {'title': 'Anak Semua Bangsa','image': 'Image/anak_semua_bangsa_cover.jpg'},
                 {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
                 {'title': 'Jejak Langkah', 'image': 'Image/jejak_langkah.jpg'},
-                {
-                  'title': 'Anak Semua Bangsa',
-                  'image': 'Image/anak_semua_bangsa_cover.jpg'
-                },
+                {'title': 'Anak Semua Bangsa','image': 'Image/anak_semua_bangsa_cover.jpg'},
                 {'title': 'Arus Balik', 'image': 'Image/arus_balik.jpg'},
               ]),
             ],
@@ -214,6 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+/// Widget untuk judul section
 class SectionTitle extends StatelessWidget {
   final String title;
 
@@ -235,6 +246,7 @@ class SectionTitle extends StatelessWidget {
   }
 }
 
+/// Widget untuk daftar horizontal buku
 class HorizontalBookList extends StatelessWidget {
   final List<Map<String, String>> books;
 

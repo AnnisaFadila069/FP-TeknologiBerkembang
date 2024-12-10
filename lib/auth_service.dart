@@ -40,4 +40,13 @@ class AuthService {
       log("Error signing out: $e");
     }
   }
+
+  Future<void> sendpasswordresetemail(String email) async{
+    try{
+      await _auth.sendPasswordResetEmail(email: email);
+    } catch (e) {
+      print('Error: ${e.toString()}');
+      throw e;
+    }
+  }
 }
