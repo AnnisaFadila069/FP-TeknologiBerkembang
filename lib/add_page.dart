@@ -72,9 +72,10 @@ class _AddPageState extends State<AddPage> {
         const SnackBar(content: Text('Book added successfully!')),
       );
 
-      // Kembali ke halaman sebelumnya
-      Navigator.pop(context);
-    } catch (e) {
+      // Pindah ke halaman Home
+      Navigator.pushReplacementNamed(context, '/home');
+    } 
+    catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
