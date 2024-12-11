@@ -87,7 +87,7 @@ class _HistoryPageState extends State<HistoryPage>
                   Container(
                     width: 60,
                     alignment: Alignment.center,
-                    child: const Text('Unread'),
+                    child: const Text('Readed'),
                   ),
                   Container(
                     width: 60,
@@ -108,7 +108,7 @@ class _HistoryPageState extends State<HistoryPage>
             controller: _tabController,
             children: [
               buildBookGrid(), // Halaman WishList
-              buildUnreadGrid(), // Halaman Unread
+              buildreadedGrid(), // Halaman Readed
               buildFavoriteList(), // Halaman Favorite
             ],
           ),
@@ -194,8 +194,8 @@ Widget buildBookGrid() {
   );
 }
 
-Widget buildUnreadGrid() {
-  List<String> unreadTitles = [
+Widget buildreadedGrid() {
+  List<String> readedTitles = [
     'Bumi Manusia',
     'Mangir',
     'Filosofi Teras',
@@ -203,7 +203,7 @@ Widget buildUnreadGrid() {
     'Negara 5 Menara',
     'Sihir Perempuan'
   ];
- List<String> unreadCovers = [
+ List<String> readedCovers = [
     'Image/bumi_manusia_cover.jpg',
     'Image/mangir_cover.jpg',
     'Image/filosofi_teras_cover.jpg',
@@ -221,7 +221,7 @@ Widget buildUnreadGrid() {
         crossAxisSpacing: 12, // Jarak horizontal antar elemen
         mainAxisSpacing: 4, // Jarak vertikal antar elemen
       ),
-      itemCount: unreadTitles.length,
+      itemCount: readedTitles.length,
       itemBuilder: (context, index) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -230,7 +230,7 @@ Widget buildUnreadGrid() {
               width: 156,
               height: 210,
               decoration: BoxDecoration(
-                color: const Color(0xfffc1b6a4), // Warna latar belakang untuk Unread
+                color: const Color(0xfffc1b6a4), // Warna latar belakang untuk Readed
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: const [
                   BoxShadow(
@@ -245,7 +245,7 @@ Widget buildUnreadGrid() {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
-                    unreadCovers[index],
+                    readedCovers[index],
                     width: 140,
                     height: 190,
                     fit: BoxFit.cover,
@@ -255,7 +255,7 @@ Widget buildUnreadGrid() {
             ),
             const SizedBox(height: 8),
             Text(
-              unreadTitles[index],
+              readedTitles[index],
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
