@@ -4,10 +4,10 @@ class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  State<HistoryPage> createState() => _BookMateHomeState();
 }
 
-class _HistoryPageState extends State<HistoryPage>
+class _BookMateHomeState extends State<HistoryPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final int _selectedBottomNavIndex = 0; // Untuk kontrol BottomNavigationBar
@@ -96,9 +96,77 @@ class _HistoryPageState extends State<HistoryPage>
                   ),
                 ],
               ),
+=======
+  backgroundColor: const Color(0xffff5f5eb), // Warna latar AppBar
+  elevation: 0, // Hilangkan bayangan
+  title: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Image.asset(
+            'Image/logo_bookmate.png',
+            width: 48, // Lebar logo
+            height: 48, // Tinggi logo
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            'BookMate',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF6D4C41), // Warna teks
             ),
           ),
+        ],
+      ),
+      const SizedBox(height: 4), // Jarak sebelum garis
+      const Divider(
+         color: Color(0xfffc1b6a3), // Warna garis
+        thickness: 0.5, // Ketebalan garis
+        height: 1, // Tinggi Divider
+      ),
+    ],
+  ),
+bottom: PreferredSize(
+  preferredSize: const Size.fromHeight(68),
+  child: Padding(
+          padding: const EdgeInsets.all(16.0),
+  child: Container(
+    decoration: BoxDecoration(
+      color: const Color(0xFFD9C6AB), // Warna latar belakang tab
+      borderRadius: BorderRadius.circular(15),
+    ),
+    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+    child: TabBar(
+      controller: _tabController,
+      indicator: BoxDecoration(
+        color: const Color(0xffff5f5eb), // Warna untuk tab aktif
+        borderRadius: BorderRadius.circular(15),
+      ),
+      labelColor: const Color(0xfffb3907a), // Warna teks tab aktif
+      unselectedLabelColor: const Color(0xffff5f5eb), // Warna teks tab tidak aktif
+      tabs: [
+        Container(
+          width: 60, // Lebar setiap tab
+          alignment: Alignment.center,
+          child: const Text('WishList'),
         ),
+        Container(
+          width: 60,
+          alignment: Alignment.center,
+          child: const Text('Readed'),
+        ),
+        Container(
+          width: 60,
+          alignment: Alignment.center,
+          child: const Text('Favorite'),
+        ),
+      ],
+    ),
+  ),
+),
+      ),
       ),
       backgroundColor: const Color(0xFFF9F6F1),
       body: IndexedStack(
@@ -108,16 +176,17 @@ class _HistoryPageState extends State<HistoryPage>
             controller: _tabController,
             children: [
               buildBookGrid(), // Halaman WishList
+
               buildreadedGrid(), // Halaman Readed
+              buildReadedGrid(), // Halaman Readed
               buildFavoriteList(), // Halaman Favorite
             ],
           ),
+         // Halaman History
         ],
       ),
     );
   }
-
-
 Widget buildBookGrid() {
   List<String> bookTitles = [
     'Gadis Pantai',
@@ -196,6 +265,8 @@ Widget buildBookGrid() {
 
 Widget buildreadedGrid() {
   List<String> readedTitles = [
+Widget buildReadedGrid() {
+  List<String> ReadedTitles = [
     'Bumi Manusia',
     'Mangir',
     'Filosofi Teras',
@@ -204,6 +275,7 @@ Widget buildreadedGrid() {
     'Sihir Perempuan'
   ];
  List<String> readedCovers = [
+ List<String> ReadedCovers = [
     'Image/bumi_manusia_cover.jpg',
     'Image/mangir_cover.jpg',
     'Image/filosofi_teras_cover.jpg',
@@ -222,6 +294,7 @@ Widget buildreadedGrid() {
         mainAxisSpacing: 4, // Jarak vertikal antar elemen
       ),
       itemCount: readedTitles.length,
+      itemCount: ReadedTitles.length,
       itemBuilder: (context, index) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -246,6 +319,7 @@ Widget buildreadedGrid() {
                   borderRadius: BorderRadius.circular(8),
                   child: Image.asset(
                     readedCovers[index],
+                    ReadedCovers[index],
                     width: 140,
                     height: 190,
                     fit: BoxFit.cover,
@@ -256,6 +330,7 @@ Widget buildreadedGrid() {
             const SizedBox(height: 8),
             Text(
               readedTitles[index],
+              ReadedTitles[index],
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
