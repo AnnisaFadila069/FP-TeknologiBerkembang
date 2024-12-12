@@ -87,9 +87,9 @@ class _SearchPageState extends State<SearchPage> {
                                 children: [
                                   // Book Image
                                   Container(
-                                    width: 80,
-                                    height: 100,
-                                    margin: const EdgeInsets.all(16.0),
+                                    width: 100,
+                                    height: 125,
+                                    margin: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
                                       color: Colors.grey[300],
                                       borderRadius: BorderRadius.circular(8.0),
