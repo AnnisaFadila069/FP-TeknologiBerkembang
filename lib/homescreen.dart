@@ -306,11 +306,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         const SizedBox(height: 8.0),
-                        Text(
-                          book['title'] ?? 'No Title',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 12.0),
+                        SizedBox(
+                          width:
+                              100, // Batas lebar teks agar sesuai dengan lebar gambar
+                          child: Text(
+                            book['title'] ?? 'No Title',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 12.0),
+                            textAlign: TextAlign
+                                .center, // Optional untuk sentralisasi teks
+                          ),
                         ),
                       ],
                     ),
