@@ -206,15 +206,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     Container(
-                      width: 100,
+
+                      width: 175,
+                      height: 275,
                       margin: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
                         borderRadius: BorderRadius.circular(8.0),
+                        image: book['imagePath'] != null &&
+                                book['imagePath'].isNotEmpty
+                            ? DecorationImage(
+                                image: NetworkImage(book['imagePath']),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
-                      child: const Center(
-                        child: Icon(Icons.book, size: 50, color: Colors.brown),
-                      ),
+                      child:
+                          book['imagePath'] == null || book['imagePath'].isEmpty
+                              ? const Center(
+                                  child: Icon(Icons.book,
+                                      size: 50, color: Colors.brown),
+                                )
+                              : null,
                     ),
                     Expanded(
                       child: Padding(
@@ -300,10 +313,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(8.0),
+                            image: book['imagePath'] != null &&
+                                    book['imagePath'].isNotEmpty
+                                ? DecorationImage(
+                                    image: NetworkImage(book['imagePath']),
+                                    fit: BoxFit.cover,
+                                  )
+                                : null,
                           ),
-                          child: const Center(
-                            child: Icon(Icons.book, size: 40),
-                          ),
+                          child: book['imagePath'] == null ||
+                                  book['imagePath'].isEmpty
+                              ? const Center(
+                                  child: Icon(Icons.book, size: 40),
+                                )
+                              : null,
                         ),
                         const SizedBox(height: 8.0),
                         SizedBox(
