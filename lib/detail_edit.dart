@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_widgets.dart';
 import 'package:intl/intl.dart';
+import 'dart:convert'; // Untuk json.encode dan json.decode
+import 'package:shared_preferences/shared_preferences.dart'; // Untuk SharedPreferences
 
 class BookDetailPage extends StatefulWidget {
   final String bookId;
 
-  const BookDetailPage({Key? key, required this.bookId}) : super(key: key);
+  const BookDetailPage({super.key, required this.bookId});
 
   @override
   _BookDetailPageState createState() => _BookDetailPageState();
@@ -14,6 +16,7 @@ class BookDetailPage extends StatefulWidget {
 
 class _BookDetailPageState extends State<BookDetailPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  bool isLoading = false;
 
   //variabel sementara
   late String tempTitle;
@@ -94,90 +97,119 @@ class _BookDetailPageState extends State<BookDetailPage> {
     _loadBookDetails();
   }
 
+// Memuat cache
+  void _cacheBookDetails(Map<String, dynamic> data) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('cachedBook_${widget.bookId}', json.encode(data));
+      print("Book details cached successfully.");
+    } catch (e) {
+      print("Error caching book details: $e");
+    }
+  }
+
+  Future<Map<String, dynamic>> _getCachedBookDetails() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final cachedData = prefs.getString('cachedBook_${widget.bookId}');
+      if (cachedData != null) {
+        return json.decode(cachedData) as Map<String, dynamic>;
+      }
+    } catch (e) {
+      print("Error retrieving cached book details: $e");
+    }
+    return {};
+  }
+
   Future<void> _loadBookDetails() async {
-    final bookData =
-        await _firestore.collection('books').doc(widget.bookId).get();
-    final data = bookData.data();
-    if (data != null) {
-      setState(() {
-        _titleController.text = data['title'];
-        _authorController.text = data['author'];
-        _publisherController.text = data['publisher'];
-        _descriptionController.text = data['description'];
-        selectedCategory = data['category'] ?? 'Fiction';
-        selectedStatus = data['status'] ?? 'Haven’t Read';
-        imagePath = data['imagePath'] ?? '';
+    setState(() {
+      isLoading = true; // Mulai loading
+    });
 
-        // Inisialisasi variabel sementara
-        tempTitle = _titleController.text;
-        tempAuthor = _authorController.text;
-        tempPublisher = _publisherController.text;
-        tempDescription = _descriptionController.text;
-        tempCategory = selectedCategory;
-        tempStatus = selectedStatus;
-
-        // Simpan data awal
-        initialTitle = _titleController.text;
-        initialAuthor = _authorController.text;
-        initialPublisher = _publisherController.text;
-        initialDescription = _descriptionController.text;
-        initialCategory = selectedCategory;
-        initialStatus = selectedStatus;
-
-        // Muat data notes
-        notesStartDate =
-            (data['notes']['notesStartDate'] as Timestamp?)?.toDate() ??
-                DateTime.now();
-        notesEndDate =
-            (data['notes']['notesEndDate'] as Timestamp?)?.toDate() ??
-                DateTime.now();
-        shortNote = data['notes']['shortNote'] ?? '';
-        review = data['notes']['review'] ?? '';
-        isFavorite = data['notes']['isFavorite'] ?? false;
-
-        // Sinkronkan dengan controller
-        notesStartDateController.text =
-            DateFormat('dd-MM-yyyy').format(notesStartDate);
-        notesEndDateController.text =
-            DateFormat('dd-MM-yyyy').format(notesEndDate);
-        shortNoteController.text = shortNote;
-        reviewController.text = review;
-
-        // Data notes
-        if (data['notes'] != null) {
-          notesStartDate =
-              (data['notes']['notesStartDate'] as Timestamp).toDate();
-          notesEndDate = (data['notes']['notesEndDate'] as Timestamp).toDate();
-          shortNote = data['notes']['shortNote'] ?? '';
-          review = data['notes']['review'] ?? '';
-          isFavorite = data['notes']['isFavorite'] ?? false;
-
+    try {
+      // Cek cache terlebih dahulu
+      final cachedData = await _getCachedBookDetails();
+      if (cachedData.isNotEmpty) {
+        setState(() {
+          _titleController.text = cachedData['title'];
+          _authorController.text = cachedData['author'];
+          _publisherController.text = cachedData['publisher'];
+          _descriptionController.text = cachedData['description'];
+          selectedCategory = cachedData['category'] ?? 'Fiction';
+          selectedStatus = cachedData['status'] ?? 'Haven’t Read';
+          imagePath = cachedData['imagePath'] ?? '';
+        });
+      }
+      // Ambil data terbaru dari Firestore
+      final bookData =
+          await _firestore.collection('books').doc(widget.bookId).get();
+      final data = bookData.data();
+      if (data != null) {
+        setState(() {
           // Data buku
-          tempTitle = data['title'] ?? '';
-          tempAuthor = data['author'] ?? '';
-          tempPublisher = data['publisher'] ?? '';
-          tempDescription = data['description'] ?? '';
-          tempCategory = data['category'] ?? 'Fiction';
-          tempStatus = data['status'] ?? 'Haven’t Read';
+          _titleController.text = data['title'] ?? '';
+          _authorController.text = data['author'] ?? '';
+          _publisherController.text = data['publisher'] ?? '';
+          _descriptionController.text = data['description'] ?? '';
+          selectedCategory = data['category'] ?? 'Fiction';
+          selectedStatus = data['status'] ?? 'Haven’t Read';
+          imagePath = data['imagePath'] ?? '';
 
-          // Data notes
-          tempNotesStartDate =
-              (data['notes']['notesStartDate'] as Timestamp?)?.toDate() ??
-                  DateTime.now();
-          tempNotesEndDate =
-              (data['notes']['notesEndDate'] as Timestamp?)?.toDate() ??
-                  DateTime.now();
-          tempShortNote = data['notes']['shortNote'] ?? '';
-          tempReview = data['notes']['review'] ?? '';
-          tempIsFavorite = data['notes']['isFavorite'] ?? false;
+          // Inisialisasi variabel sementara
+          tempTitle = _titleController.text;
+          tempAuthor = _authorController.text;
+          tempPublisher = _publisherController.text;
+          tempDescription = _descriptionController.text;
+          tempCategory = selectedCategory;
+          tempStatus = selectedStatus;
 
           // Simpan data awal
+          initialTitle = tempTitle;
+          initialAuthor = tempAuthor;
+          initialPublisher = tempPublisher;
+          initialDescription = tempDescription;
+          initialCategory = tempCategory;
+          initialStatus = tempStatus;
+
+          // Data notes
+          final notes = data['notes'] ?? {};
+          notesStartDate = (notes['notesStartDate'] as Timestamp?)?.toDate() ??
+              DateTime.now();
+          notesEndDate =
+              (notes['notesEndDate'] as Timestamp?)?.toDate() ?? DateTime.now();
+          shortNote = notes['shortNote'] ?? '';
+          review = notes['review'] ?? '';
+          isFavorite = notes['isFavorite'] ?? false;
+
+          // Sinkronkan dengan controller
+          notesStartDateController.text =
+              DateFormat('dd-MM-yyyy').format(notesStartDate);
+          notesEndDateController.text =
+              DateFormat('dd-MM-yyyy').format(notesEndDate);
+          shortNoteController.text = shortNote;
+          reviewController.text = review;
+
+          // Inisialisasi data notes sementara
+          tempNotesStartDate = notesStartDate;
+          tempNotesEndDate = notesEndDate;
+          tempShortNote = shortNote;
+          tempReview = review;
+          tempIsFavorite = isFavorite;
+
+          // Simpan data awal notes
           initialNotesStartDate = tempNotesStartDate;
           initialNotesEndDate = tempNotesEndDate;
           initialShortNote = tempShortNote;
           initialReview = tempReview;
           initialIsFavorite = tempIsFavorite;
-        }
+        });
+      }
+    } catch (e) {
+      // Tangani error jika ada
+      print('Error loading book details: $e');
+    } finally {
+      setState(() {
+        isLoading = false; // Selesai loading
       });
     }
   }
@@ -296,167 +328,171 @@ class _BookDetailPageState extends State<BookDetailPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Column(
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      // Logika memilih gambar
-                    },
-                    child: Container(
-                      width: 100,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE1DACA),
-                        borderRadius: BorderRadius.circular(8),
-                        image: imagePath.isNotEmpty
-                            ? DecorationImage(
-                                image: NetworkImage(imagePath),
-                                fit: BoxFit.cover,
-                              )
-                            : null,
-                      ),
-                      child: imagePath.isEmpty
-                          ? const Icon(Icons.add,
-                              size: 40, color: Color(0xFFB3907A))
-                          : null,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator()) // Loading indicator
+          : SingleChildScrollView(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  children: [
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          _titleController.text,
-                          style: const TextStyle(
-                            fontFamily: 'BeVietnamPro',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF7B7B7D),
+                        GestureDetector(
+                          onTap: () async {
+                            // Logika memilih gambar
+                          },
+                          child: Container(
+                            width: 100,
+                            height: 140,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE1DACA),
+                              borderRadius: BorderRadius.circular(8),
+                              image: imagePath.isNotEmpty
+                                  ? DecorationImage(
+                                      image: NetworkImage(imagePath),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : null,
+                            ),
+                            child: imagePath.isEmpty
+                                ? const Icon(Icons.add,
+                                    size: 40, color: Color(0xFFB3907A))
+                                : null,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Author: ${_authorController.text}',
-                          style: const TextStyle(
-                            fontFamily: 'BeVietnamPro',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF918674),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _titleController.text,
+                                style: const TextStyle(
+                                  fontFamily: 'BeVietnamPro',
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: Color(0xFF7B7B7D),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Author: ${_authorController.text}',
+                                style: const TextStyle(
+                                  fontFamily: 'BeVietnamPro',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF918674),
+                                ),
+                              ),
+                              Text(
+                                'Publisher: ${_publisherController.text}',
+                                style: const TextStyle(
+                                  fontFamily: 'BeVietnamPro',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF918674),
+                                ),
+                              ),
+                              Text(
+                                'Categories: $selectedCategory',
+                                style: const TextStyle(
+                                  fontFamily: 'BeVietnamPro',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFF918674),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: selectedStatus == 'Haven’t Read'
+                                      ? Colors.red
+                                      : selectedStatus == 'Reading'
+                                          ? Colors.orange
+                                          : Colors.green,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  selectedStatus,
+                                  style: const TextStyle(
+                                    fontFamily: 'BeVietnamPro',
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        Text(
-                          'Publisher: ${_publisherController.text}',
-                          style: const TextStyle(
-                            fontFamily: 'BeVietnamPro',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF918674),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              isEditing = false;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: !isEditing
+                                ? const Color(0xFFC1B6A3)
+                                : Colors.grey.shade300,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
                           ),
-                        ),
-                        Text(
-                          'Categories: $selectedCategory',
-                          style: const TextStyle(
-                            fontFamily: 'BeVietnamPro',
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF918674),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selectedStatus == 'Haven’t Read'
-                                ? Colors.red
-                                : selectedStatus == 'Reading'
-                                    ? Colors.orange
-                                    : Colors.green,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            selectedStatus,
-                            style: const TextStyle(
+                          child: const Text(
+                            'Notes',
+                            style: TextStyle(
                               fontFamily: 'BeVietnamPro',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w400,
                               color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              isEditing = true;
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isEditing
+                                ? const Color(0xFFC1B6A3)
+                                : Colors.grey.shade300,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: const Text(
+                            'Edit',
+                            style: TextStyle(
+                              fontFamily: 'BeVietnamPro',
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 16),
+                    isEditing ? _buildEditForm() : buildNotesForm(),
+                  ],
+                ),
               ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isEditing = false;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: !isEditing
-                          ? const Color(0xFFC1B6A3)
-                          : Colors.grey.shade300,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'Notes',
-                      style: TextStyle(
-                        fontFamily: 'BeVietnamPro',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        isEditing = true;
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isEditing
-                          ? const Color(0xFFC1B6A3)
-                          : Colors.grey.shade300,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      'Edit',
-                      style: TextStyle(
-                        fontFamily: 'BeVietnamPro',
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              isEditing ? _buildEditForm() : buildNotesForm(),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
@@ -589,177 +625,179 @@ class _BookDetailPageState extends State<BookDetailPage> {
     );
   }
 
-Widget _buildEditForm() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      CustomTextField(
-        label: 'Title',
-        hintText: tempTitle,
-        controller: TextEditingController(text: tempTitle),
-        onChanged: (value) {
-          setState(() {
-            tempTitle = value;
-          });
-        },
-      ),
-      CustomTextField(
-        label: 'Author',
-        hintText: tempAuthor,
-        controller: TextEditingController(text: tempAuthor),
-        onChanged: (value) {
-          setState(() {
-            tempAuthor = value;
-          });
-        },
-      ),
-      CustomTextField(
-        label: 'Publisher',
-        hintText: tempPublisher,
-        controller: TextEditingController(text: tempPublisher),
-        onChanged: (value) {
-          setState(() {
-            tempPublisher = value;
-          });
-        },
-      ),
-      CustomDropdown(
-        label: 'Categories',
-        items: [
-          'Fiction',
-          'Non-Fiction',
-          'Self-Help & Personal Development',
-          'Business & Finance',
-          'Science & Technology',
-          'Health & Wellness',
-          'Biography & Memoir',
-          'History',
-          'Religion & Spirituality',
-          'Education & Reference',
-          'Art & Design',
-          'Travel & Adventure',
-          'Poetry',
-          'Children’s Books',
-          'Graphic Novels & Comics',
-        ],
-        value: [
-          'Fiction',
-          'Non-Fiction',
-          'Self-Help & Personal Development',
-          'Business & Finance',
-          'Science & Technology',
-          'Health & Wellness',
-          'Biography & Memoir',
-          'History',
-          'Religion & Spirituality',
-          'Education & Reference',
-          'Art & Design',
-          'Travel & Adventure',
-          'Poetry',
-          'Children’s Books',
-          'Graphic Novels & Comics',
-        ].contains(tempCategory) 
-          ? tempCategory 
-          : 'Fiction', // Fallback jika nilai tidak valid
-        onChanged: (value) {
-          setState(() {
-            tempCategory = value!;
-          });
-        },
-      ),
-      CustomDropdown(
-        label: 'Status',
-        items: ['Haven’t Read', 'Reading', 'Finished'],
-        value: ['Haven’t Read', 'Reading', 'Finished'].contains(tempStatus) 
-          ? tempStatus 
-          : 'Reading', // Fallback jika nilai tidak valid
-        onChanged: (value) {
-          setState(() {
-            tempStatus = value!;
-          });
-        },
-      ),
-      CustomTextField(
-        label: 'Description',
-        hintText: tempDescription,
-        controller: TextEditingController(text: tempDescription),
-        maxLines: 4,
-        onChanged: (value) {
-          setState(() {
-            tempDescription = value;
-          });
-        },
-      ),
-      const SizedBox(height: 16),
-      Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                final confirm = await showDialog<bool>(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text('Confirm Deletion'),
-                    content: const Text(
-                        'Are you sure you want to delete this book?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        child: const Text('Delete'),
-                      ),
-                    ],
-                  ),
-                );
-
-                if (confirm == true) {
-                  await _deleteBook();
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              ),
-              child: const Text(
-                'DELETE',
-                style: TextStyle(
-                  fontFamily: 'BeVietnamPro',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16), // Spasi antara tombol
-            ElevatedButton(
-              onPressed: _confirmAndSaveBook, // Memanggil logika konfirmasi simpan
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFC1B6A3),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-              ),
-              child: const Text(
-                'SAVE',
-                style: TextStyle(
-                  fontFamily: 'BeVietnamPro',
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
+  Widget _buildEditForm() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomTextField(
+          label: 'Title',
+          hintText: tempTitle,
+          controller: TextEditingController(text: tempTitle),
+          onChanged: (value) {
+            setState(() {
+              tempTitle = value;
+            });
+          },
         ),
-      ),
-    ],
-  );
-}
+        CustomTextField(
+          label: 'Author',
+          hintText: tempAuthor,
+          controller: TextEditingController(text: tempAuthor),
+          onChanged: (value) {
+            setState(() {
+              tempAuthor = value;
+            });
+          },
+        ),
+        CustomTextField(
+          label: 'Publisher',
+          hintText: tempPublisher,
+          controller: TextEditingController(text: tempPublisher),
+          onChanged: (value) {
+            setState(() {
+              tempPublisher = value;
+            });
+          },
+        ),
+        CustomDropdown(
+          label: 'Categories',
+          items: const [
+            'Fiction',
+            'Non-Fiction',
+            'Self-Help & Personal Development',
+            'Business & Finance',
+            'Science & Technology',
+            'Health & Wellness',
+            'Biography & Memoir',
+            'History',
+            'Religion & Spirituality',
+            'Education & Reference',
+            'Art & Design',
+            'Travel & Adventure',
+            'Poetry',
+            'Children’s Books',
+            'Graphic Novels & Comics',
+          ],
+          value: [
+            'Fiction',
+            'Non-Fiction',
+            'Self-Help & Personal Development',
+            'Business & Finance',
+            'Science & Technology',
+            'Health & Wellness',
+            'Biography & Memoir',
+            'History',
+            'Religion & Spirituality',
+            'Education & Reference',
+            'Art & Design',
+            'Travel & Adventure',
+            'Poetry',
+            'Children’s Books',
+            'Graphic Novels & Comics',
+          ].contains(tempCategory)
+              ? tempCategory
+              : 'Fiction', // Fallback jika nilai tidak valid
+          onChanged: (value) {
+            setState(() {
+              tempCategory = value!;
+            });
+          },
+        ),
+        CustomDropdown(
+          label: 'Status',
+          items: const ['Haven’t Read', 'Reading', 'Finished'],
+          value: ['Haven’t Read', 'Reading', 'Finished'].contains(tempStatus)
+              ? tempStatus
+              : 'Reading', // Fallback jika nilai tidak valid
+          onChanged: (value) {
+            setState(() {
+              tempStatus = value!;
+            });
+          },
+        ),
+        CustomTextField(
+          label: 'Description',
+          hintText: tempDescription,
+          controller: TextEditingController(text: tempDescription),
+          maxLines: 4,
+          onChanged: (value) {
+            setState(() {
+              tempDescription = value;
+            });
+          },
+        ),
+        const SizedBox(height: 16),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Confirm Deletion'),
+                      content: const Text(
+                          'Are you sure you want to delete this book?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('Delete'),
+                        ),
+                      ],
+                    ),
+                  );
 
+                  if (confirm == true) {
+                    await _deleteBook();
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text(
+                  'DELETE',
+                  style: TextStyle(
+                    fontFamily: 'BeVietnamPro',
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16), // Spasi antara tombol
+              ElevatedButton(
+                onPressed:
+                    _confirmAndSaveBook, // Memanggil logika konfirmasi simpan
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFC1B6A3),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                ),
+                child: const Text(
+                  'SAVE',
+                  style: TextStyle(
+                    fontFamily: 'BeVietnamPro',
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
