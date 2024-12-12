@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -15,9 +16,40 @@ class _AddPageState extends State<AddPage> {
   final TextEditingController _publisherController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
 
+  // Firebase Auth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
   // State nilai awal dropdown
   String selectedCategory = 'Fiction';
-  String selectedStatus = 'Not Started';
+  String selectedStatus = 'Haven’t Read';
+  String imagePath = '';
+  bool isLoading = false;
+
+  final List<String> availableImages = [
+    'Image/bumi_manusia.jpg',
+    'Image/gadis_pantai.jpg',
+    'Image/mangir.jpg',
+    'Image/anak_semua_bangsa.jpg',
+    'Image/arus_balik.jpg',
+    'Image/jejak_langkah.jpg',
+    'Image/bumi_manusia_cover.jpg',
+    'Image/logo_bookmate.png',
+    'Image/filosofi_teras_cover.jpg',
+    'Image/gadis_pantai_cover.jpg',
+    'Image/hujan_cover.jpg',
+    'Image/laskar_pelangi_cover.jpg',
+    'Image/laut_bercerita_cover.jpg',
+    'Image/mangir_cover.jpg',
+    'Image/negara_5_menara_cover.jpg',
+    'Image/rumah_kaca_cover.jpg',
+    'Image/tentang_kamu_cover.jpg',
+    'Image/tujuh_kelana_cover.jpg',
+    'Image/sihir_perempuan_cover.jpg',
+    'Image/cantik_itu_luka_cover.jpg',
+    'Image/anak_semua_bangsa_cover.jpg',
+    'Image/gadis_kretek_cover.jpg',
+    'Image/sang_pemimpi_cover.jpg'
+  ];
 
   final List<String> _categories = [
     'Fiction',
@@ -38,9 +70,9 @@ class _AddPageState extends State<AddPage> {
   ];
 
   final List<String> _statuses = [
-    'Not Started',
-    'Completed',
-    'Currently Reading',
+    'Haven’t Read',
+    'Finished',
+    'Reading',
   ];
 
   Future<void> _saveBook() async {
@@ -48,14 +80,28 @@ class _AddPageState extends State<AddPage> {
     if (_titleController.text.isEmpty ||
         _authorController.text.isEmpty ||
         _publisherController.text.isEmpty ||
-        _descriptionController.text.isEmpty) {
+        _descriptionController.text.isEmpty ||
+        imagePath.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('All fields are required')),
+        const SnackBar(content: Text('All fields and an image are required')),
       );
       return;
     }
 
+    setState(() {
+      isLoading = true;
+    });
+
     try {
+      // Mendapatkan user ID yang sedang login
+      final User? user = _auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User not logged in')),
+        );
+        return;
+      }
+
       // Menyimpan data ke Firestore
       await FirebaseFirestore.instance.collection('books').add({
         'title': _titleController.text,
@@ -65,6 +111,8 @@ class _AddPageState extends State<AddPage> {
         'categories': selectedCategory,
         'status': selectedStatus,
         'created_at': FieldValue.serverTimestamp(),
+        'user_id': user.uid, // Tautkan ke user_id
+        'imagePath': imagePath, // Tambahkan path gambar
       });
 
       // Menampilkan pesan berhasil
@@ -74,23 +122,59 @@ class _AddPageState extends State<AddPage> {
 
       // Pindah ke halaman Home
       Navigator.pushReplacementNamed(context, '/home');
-    } 
-    catch (e) {
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _selectImage() async {
+    final selectedImage = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Select an Image'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: availableImages.length,
+              itemBuilder: (context, index) {
+                final imagePath = availableImages[index];
+                return ListTile(
+                  leading: Image.asset(imagePath, width: 50, height: 50),
+                  title: Text('Image ${index + 1}'),
+                  onTap: () {
+                    Navigator.pop(context, imagePath); // Kembalikan path gambar
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selectedImage != null) {
+      setState(() {
+        imagePath = selectedImage;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF9F5EE), // Pale pink
+      backgroundColor: const Color(0xFFF9F5EE),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF9F5EE), // Pale pink
+        backgroundColor: const Color(0xFFF9F5EE),
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -104,102 +188,127 @@ class _AddPageState extends State<AddPage> {
             fontWeight: FontWeight.w500,
           ),
         ),
-        centerTitle: false,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    // Fungsi upload image jika diperlukan
-                  },
-                  child: Container(
-                    width: 100,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFE1DACA), // Box color
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: const Icon(Icons.add, size: 40, color: Color(0xFF7B7B7D)),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              CustomTextField(
-                label: 'Title',
-                hintText: 'Enter Title',
-                controller: _titleController,
-              ),
-              CustomTextField(
-                label: 'Author',
-                hintText: 'Enter Author',
-                controller: _authorController,
-              ),
-              CustomTextField(
-                label: 'Publisher',
-                hintText: 'Enter Publisher',
-                controller: _publisherController,
-              ),
-              CustomDropdown(
-                label: 'Categories',
-                items: _categories,
-                value: selectedCategory,
-                onChanged: (value) {
-                  setState(() {
-                    selectedCategory = value!;
-                  });
-                },
-              ),
-              CustomDropdown(
-                label: 'Status',
-                items: _statuses,
-                value: selectedStatus,
-                onChanged: (value) {
-                  setState(() {
-                    selectedStatus = value!;
-                  });
-                },
-              ),
-              CustomTextField(
-                label: 'Description',
-                hintText: 'Enter Description',
-                controller: _descriptionController,
-                maxLines: 5,
-              ),
-              const SizedBox(height: 16),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _saveBook,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFC1B6A3), // Save button color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                  ),
-                  child: const Text(
-                    'SAVE',
-                    style: TextStyle(
-                      fontFamily: 'BeVietnamPro',
-                      color: Colors.white, // Save text color
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            ) // Loading indicator
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Gambar di tengah atas
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: GestureDetector(
+                      onTap: _selectImage, // Panggil fungsi pemilihan gambar
+                      child: Container(
+                        width: 140,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE1DACA),
+                          borderRadius: BorderRadius.circular(16),
+                          image: imagePath.isNotEmpty
+                              ? DecorationImage(
+                                  image: AssetImage(imagePath),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: imagePath.isEmpty
+                            ? const Icon(
+                                Icons.add,
+                                size: 40,
+                                color: Color(0xFFB3907A),
+                              )
+                            : null,
+                      ),
                     ),
                   ),
-                ),
+
+                  // Formulir input di bawah gambar
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          label: 'Title',
+                          hintText: 'Enter Title',
+                          controller: _titleController,
+                        ),
+                        CustomTextField(
+                          label: 'Author',
+                          hintText: 'Enter Author',
+                          controller: _authorController,
+                        ),
+                        CustomTextField(
+                          label: 'Publisher',
+                          hintText: 'Enter Publisher',
+                          controller: _publisherController,
+                        ),
+                        CustomDropdown(
+                          label: 'Categories',
+                          items: _categories,
+                          value: selectedCategory,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedCategory = value!;
+                            });
+                          },
+                        ),
+                        CustomDropdown(
+                          label: 'Status',
+                          items: _statuses,
+                          value: selectedStatus,
+                          onChanged: (value) {
+                            setState(() {
+                              selectedStatus = value!;
+                            });
+                          },
+                        ),
+                        CustomTextField(
+                          label: 'Description',
+                          hintText: 'Enter Description',
+                          controller: _descriptionController,
+                          maxLines: 5,
+                        ),
+                        const SizedBox(height: 16),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: _saveBook,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFC1B6A3),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                                vertical: 12,
+                              ),
+                            ),
+                            child: const Text(
+                              'SAVE',
+                              style: TextStyle(
+                                fontFamily: 'BeVietnamPro',
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }
 
+// Custom Widgets
 class CustomTextField extends StatelessWidget {
   final String label;
   final String hintText;
@@ -227,7 +336,7 @@ class CustomTextField extends StatelessWidget {
               fontFamily: 'BeVietnamPro',
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF7B7B7D), // Label color
+              color: Color(0xFF7B7B7D),
             ),
           ),
           const SizedBox(height: 4),
@@ -236,7 +345,7 @@ class CustomTextField extends StatelessWidget {
             maxLines: maxLines,
             decoration: InputDecoration(
               filled: true,
-              fillColor: const Color(0xFFE1DACA), // Box color
+              fillColor: const Color(0xFFE1DACA),
               hintText: hintText,
               hintStyle: const TextStyle(color: Colors.grey),
               border: OutlineInputBorder(
@@ -278,14 +387,14 @@ class CustomDropdown extends StatelessWidget {
               fontFamily: 'BeVietnamPro',
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF7B7B7D), // Label color
+              color: Color(0xFF7B7B7D),
             ),
           ),
           const SizedBox(height: 4),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFE1DACA), // Box color
+              color: const Color(0xFFE1DACA),
               borderRadius: BorderRadius.circular(8),
             ),
             child: DropdownButtonHideUnderline(
@@ -306,7 +415,7 @@ class CustomDropdown extends StatelessWidget {
                   );
                 }).toList(),
                 onChanged: onChanged,
-                dropdownColor: const Color(0xFFF9F5EE), // Dropdown background
+                dropdownColor: const Color(0xFFF9F5EE),
               ),
             ),
           ),
