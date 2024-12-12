@@ -57,7 +57,13 @@ flutter:
     - Image/anak_semua_bangsa_cover.jpg
     - Image/gadis_kretek_cover.jpg
     - Image/sang_pemimpi_cover.jpg
-
+    - Image/avatar1.jpg
+    - Image/avatar2.jpg
+    - Image/avatar3.jpg
+    - Image/avatar4.jpg
+    - Image/avatar5.jpg
+    - Image/avatar6.jpg
+    
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
