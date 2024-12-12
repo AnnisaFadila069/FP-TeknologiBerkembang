@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "87504152760",
+    "project_id": "tekber-310ab",
+    "storage_bucket": "tekber-310ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87504152760:android:e813e082e9ea10c43b6c4d",
+        "android_client_info": {
+          "package_name": "com.example.fp_kelompok3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdAnTbul-L8qy6a_wIqlBU-Zpb6Mb5epc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

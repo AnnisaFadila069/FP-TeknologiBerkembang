@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'main.dart'; // Impor main.dart agar bisa langsung mengakses MainPage
+import 'onboarding.dart'; // Impor WelcomeScreen
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -12,11 +12,11 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigasi ke MainPage setelah 3 detik
+    // Navigasi ke WelcomeScreen setelah 3 detik
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const MainPage()), // Langsung ke MainPage
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()), // Navigasi ke WelcomeScreen
       );
     });
   }
@@ -24,10 +24,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5E1C8),
+      backgroundColor: const Color(0xFFF5E1C8), // Cream background
       body: Center(
         child: Image.asset(
-          'Image/gambarLogo.png', // Ganti dengan path gambar Anda
+          'Image/BookMate.png', // Ganti dengan path gambar lokal Anda
           height: 200, // Sesuaikan ukuran gambar
         ),
       ),

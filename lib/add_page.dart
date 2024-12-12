@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -8,16 +10,98 @@ class AddPage extends StatefulWidget {
 }
 
 class _AddPageState extends State<AddPage> {
-  // state nilai awal
+  // Controllers untuk TextField
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _authorController = TextEditingController();
+  final TextEditingController _publisherController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  // Firebase Auth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // State nilai awal dropdown
   String selectedCategory = 'Fiction';
-  String selectedStatus = 'Selesai';
+  String selectedStatus = 'Not Started';
+
+  final List<String> _categories = [
+    'Fiction',
+    'Non-Fiction',
+    'Self-Help & Personal Development',
+    'Business & Finance',
+    'Science & Technology',
+    'Health & Wellness',
+    'Biography & Memoir',
+    'History',
+    'Religion & Spirituality',
+    'Education & Reference',
+    'Art & Design',
+    'Travel & Adventure',
+    'Poetry',
+    'Children’s Books',
+    'Graphic Novels & Comics',
+  ];
+
+  final List<String> _statuses = [
+    'Not Started',
+    'Completed',
+    'Currently Reading',
+  ];
+
+  Future<void> _saveBook() async {
+    // Validasi input
+    if (_titleController.text.isEmpty ||
+        _authorController.text.isEmpty ||
+        _publisherController.text.isEmpty ||
+        _descriptionController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('All fields are required')),
+      );
+      return;
+    }
+
+    try {
+      // Mendapatkan user ID yang sedang login
+      final User? user = _auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('User not logged in')),
+        );
+        return;
+      }
+
+      // Menyimpan data ke Firestore
+      await FirebaseFirestore.instance.collection('books').add({
+        'title': _titleController.text,
+        'author': _authorController.text,
+        'publisher': _publisherController.text,
+        'description': _descriptionController.text,
+        'categories': selectedCategory,
+        'status': selectedStatus,
+        'created_at': FieldValue.serverTimestamp(),
+        'user_id': user.uid, // Tautkan ke user_id
+      });
+
+      // Menampilkan pesan berhasil
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Book added successfully!')),
+      );
+
+      // Pindah ke halaman Home
+      Navigator.pushReplacementNamed(context, '/home');
+    } 
+    catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5EB),
+      backgroundColor: const Color(0xFFF9F5EE), // Pale pink
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF5F5EB),
+        backgroundColor: const Color(0xFFF9F5EE), // Pale pink
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.close, color: Colors.black),
@@ -45,27 +129,38 @@ class _AddPageState extends State<AddPage> {
               Center(
                 child: GestureDetector(
                   onTap: () {
-                    // fungsi pas add image ntar
+                    // Fungsi upload image jika diperlukan
                   },
                   child: Container(
                     width: 100,
                     height: 140,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE1DACA),
+                      color: const Color(0xFFE1DACA), // Box color
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.add, size: 40, color: Color(0xFFB3907A)),
+                    child: const Icon(Icons.add, size: 40, color: Color(0xFF7B7B7D)),
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              const CustomTextField(label: 'Title', hintText: 'Enter Title'),
-              const CustomTextField(label: 'Author', hintText: 'Enter Author'),
-              const CustomTextField(label: 'Publisher', hintText: 'Enter Publisher'),
-              // Dropdown untuk Categories
+              CustomTextField(
+                label: 'Title',
+                hintText: 'Enter Title',
+                controller: _titleController,
+              ),
+              CustomTextField(
+                label: 'Author',
+                hintText: 'Enter Author',
+                controller: _authorController,
+              ),
+              CustomTextField(
+                label: 'Publisher',
+                hintText: 'Enter Publisher',
+                controller: _publisherController,
+              ),
               CustomDropdown(
                 label: 'Categories',
-                items: ['Fiction', 'Non-Fiction', 'Sci-Fi'],
+                items: _categories,
                 value: selectedCategory,
                 onChanged: (value) {
                   setState(() {
@@ -73,10 +168,9 @@ class _AddPageState extends State<AddPage> {
                   });
                 },
               ),
-              // Dropdown untuk Status
               CustomDropdown(
                 label: 'Status',
-                items: ['Selesai', 'Sedang Dibaca', 'Sudah Dibaca'],
+                items: _statuses,
                 value: selectedStatus,
                 onChanged: (value) {
                   setState(() {
@@ -84,19 +178,18 @@ class _AddPageState extends State<AddPage> {
                   });
                 },
               ),
-              const CustomTextField(
+              CustomTextField(
                 label: 'Description',
                 hintText: 'Enter Description',
+                controller: _descriptionController,
                 maxLines: 5,
               ),
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
-                  onPressed: () {
-                    // buat save nanti 
-                  },
+                  onPressed: _saveBook,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFC1B6A3),
+                    backgroundColor: const Color(0xFFC1B6A3), // Save button color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -104,7 +197,12 @@ class _AddPageState extends State<AddPage> {
                   ),
                   child: const Text(
                     'SAVE',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                      fontFamily: 'BeVietnamPro',
+                      color: Colors.white, // Save text color
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -119,12 +217,14 @@ class _AddPageState extends State<AddPage> {
 class CustomTextField extends StatelessWidget {
   final String label;
   final String hintText;
+  final TextEditingController controller;
   final int maxLines;
 
   const CustomTextField({
     super.key,
     required this.label,
     required this.hintText,
+    required this.controller,
     this.maxLines = 1,
   });
 
@@ -141,15 +241,16 @@ class CustomTextField extends StatelessWidget {
               fontFamily: 'BeVietnamPro',
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Colors.grey,
+              color: Color(0xFF7B7B7D), // Label color
             ),
           ),
           const SizedBox(height: 4),
           TextField(
+            controller: controller,
             maxLines: maxLines,
             decoration: InputDecoration(
               filled: true,
-              fillColor: const Color(0xFFE1DACA),
+              fillColor: const Color(0xFFE1DACA), // Box color
               hintText: hintText,
               hintStyle: const TextStyle(color: Colors.grey),
               border: OutlineInputBorder(
@@ -191,14 +292,14 @@ class CustomDropdown extends StatelessWidget {
               fontFamily: 'BeVietnamPro',
               fontSize: 14,
               fontWeight: FontWeight.w500,
-              color: Colors.grey,
+              color: Color(0xFF7B7B7D), // Label color
             ),
           ),
           const SizedBox(height: 4),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
-              color: const Color(0xFFE1DACA),
+              color: const Color(0xFFE1DACA), // Box color
               borderRadius: BorderRadius.circular(8),
             ),
             child: DropdownButtonHideUnderline(
@@ -211,19 +312,15 @@ class CustomDropdown extends StatelessWidget {
                     child: Text(
                       value,
                       style: const TextStyle(
+                        fontFamily: 'BeVietnamPro',
                         fontSize: 14,
-                        color: Colors.black, 
+                        color: Colors.black,
                       ),
                     ),
                   );
                 }).toList(),
                 onChanged: onChanged,
-                dropdownColor: const Color(0xFFF5F5EB), 
-                style: const TextStyle(
-                  fontFamily: 'BeVietnamPro',
-                  fontSize: 14,
-                  color: Colors.black, 
-                ),
+                dropdownColor: const Color(0xFFF9F5EE), // Dropdown background
               ),
             ),
           ),
