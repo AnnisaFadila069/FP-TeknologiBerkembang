@@ -17,6 +17,31 @@ class BookDetailPage extends StatefulWidget {
 class _BookDetailPageState extends State<BookDetailPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool isLoading = false;
+  final List<String> availableImages = [
+    'Image/bumi_manusia.jpg',
+    'Image/gadis_pantai.jpg',
+    'Image/mangir.jpg',
+    'Image/anak_semua_bangsa.jpg',
+    'Image/arus_balik.jpg',
+    'Image/jejak_langkah.jpg',
+    'Image/bumi_manusia_cover.jpg',
+    'Image/logo_bookmate.png',
+    'Image/filosofi_teras_cover.jpg',
+    'Image/gadis_pantai_cover.jpg',
+    'Image/hujan_cover.jpg',
+    'Image/laskar_pelangi_cover.jpg',
+    'Image/laut_bercerita_cover.jpg',
+    'Image/mangir_cover.jpg',
+    'Image/negara_5_menara_cover.jpg',
+    'Image/rumah_kaca_cover.jpg',
+    'Image/tentang_kamu_cover.jpg',
+    'Image/tujuh_kelana_cover.jpg',
+    'Image/sihir_perempuan_cover.jpg',
+    'Image/cantik_itu_luka_cover.jpg',
+    'Image/anak_semua_bangsa_cover.jpg',
+    'Image/gadis_kretek_cover.jpg',
+    'Image/sang_pemimpi_cover.jpg'
+  ];
 
   //variabel sementara
   late String tempTitle;
@@ -341,9 +366,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         GestureDetector(
-                          onTap: () async {
-                            // Logika memilih gambar
-                          },
+                          onTap:
+                              _selectImage, // Panggil fungsi pemilihan gambar
                           child: Container(
                             width: 100,
                             height: 140,
@@ -352,7 +376,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                               borderRadius: BorderRadius.circular(8),
                               image: imagePath.isNotEmpty
                                   ? DecorationImage(
-                                      image: NetworkImage(imagePath),
+                                      image: AssetImage(
+                                          imagePath), // Gunakan AssetImage
                                       fit: BoxFit.cover,
                                     )
                                   : null,
@@ -494,6 +519,40 @@ class _BookDetailPageState extends State<BookDetailPage> {
               ),
             ),
     );
+  }
+
+  Future<void> _selectImage() async {
+    final selectedImage = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Select an Image'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: availableImages.length,
+              itemBuilder: (context, index) {
+                final imagePath = availableImages[index];
+                return ListTile(
+                  leading: Image.asset(imagePath, width: 50, height: 50),
+                  title: Text('Image ${index + 1}'),
+                  onTap: () {
+                    Navigator.pop(
+                        context, imagePath); // Return the selected image
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selectedImage != null) {
+      setState(() {
+        imagePath = selectedImage;
+      });
+    }
   }
 
   Widget buildNotesForm() {
