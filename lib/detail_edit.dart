@@ -17,7 +17,6 @@ class BookDetailPage extends StatefulWidget {
 class _BookDetailPageState extends State<BookDetailPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   bool isLoading = false;
-
   final List<String> availableImages = [
     'Image/bumi_manusia.jpg',
     'Image/gadis_pantai.jpg',

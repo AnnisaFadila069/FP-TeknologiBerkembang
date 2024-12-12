@@ -12,7 +12,7 @@ class CustomTextField extends StatelessWidget {
   final ValueChanged<String>? onChanged; // Tambahkan properti onChanged
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.label,
     required this.hintText,
     this.controller, // Tetap opsional
@@ -20,7 +20,7 @@ class CustomTextField extends StatelessWidget {
     this.onTap, // Tambahkan ke konstruktor
     this.readOnly = false, // Tambahkan ke konstruktor
     this.onChanged, // Tambahkan onChanged ke konstruktor
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
