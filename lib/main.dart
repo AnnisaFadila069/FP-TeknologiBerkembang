@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'splash.dart';
 import 'homescreen.dart';
 import 'history.dart';
+import 'add_page.dart';
+import 'detail_edit.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -71,7 +73,7 @@ class _MainPageState extends State<MainPage> {
         currentIndex: _currentIndex,
         selectedItemColor: Colors.brown,
         unselectedItemColor: Colors.grey,
-        backgroundColor: const Color(0xFFF9F5EE),
+        backgroundColor: const Color(0xFFEFE7DA),
         type: BottomNavigationBarType.fixed,
         onTap: (index) {
           setState(() {

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fp_kelompok3/profilepage.dart';
 import 'auth_service.dart';
 import 'loginpage.dart';
 import 'profilepage.dart';
@@ -11,7 +14,9 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _auth = AuthService();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -24,6 +29,11 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
+  bool isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
   Future<void> register(BuildContext context) async {
     final username = usernameController.text.trim();
     final email = emailController.text.trim();
@@ -34,22 +44,47 @@ class _RegisterPageState extends State<RegisterPage> {
       return;
     }
 
+    if (!isValidEmail(email)) {
+      _showDialog(context, 'Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+
     try {
-      final user = await _auth.createUserWithEmailAndPassword(email, password);
+      // Register user with Firebase Authentication
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      User? user = userCredential.user;
+
       if (user != null) {
-        _showDialog(context, 'Registration Successful', 'Welcome, $username!',
-            isSuccess: true);
-      } else {
+        // Save data to Firestore
+        await _firestore.collection('users').doc(user.uid).set({
+          'username': username,
+          'email': email,
+          'profileData': null, // Default value
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+
+        // Send email verification
+        await user.sendEmailVerification();
+
         _showDialog(
-            context, 'Registration Failed', 'Could not register the user.');
+          context,
+          'Registration Successful',
+          'A verification email has been sent to $email. Please verify your email before logging in.',
+          isSuccess: true,
+        );
       }
+    } on FirebaseAuthException catch (e) {
+      _showDialog(context, 'Registration Failed', e.message ?? 'Unknown error occurred.');
     } catch (e) {
       _showDialog(context, 'Registration Failed', 'Error: $e');
     }
   }
 
-  void _showDialog(BuildContext context, String title, String message,
-      {bool isSuccess = false}) {
+  void _showDialog(BuildContext context, String title, String message, {bool isSuccess = false}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -58,10 +93,10 @@ class _RegisterPageState extends State<RegisterPage> {
           content: Text(message),
           actions: [
             TextButton(
+              child: const Text('OK'),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context); // Close dialog
                 if (isSuccess) {
-                  // Ubah tujuan navigasi ke ProfilePage
                   Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
@@ -73,7 +108,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   );
                 }
               },
-              child: const Text('OK'),
             ),
           ],
         );
@@ -147,10 +181,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () => register(context),
-                          child: const Text(
-                            'Create Account',
-                            style: TextStyle(color: Colors.black),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFE4DECF),
                             padding: const EdgeInsets.symmetric(
@@ -159,6 +189,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderRadius: BorderRadius.circular(15),
                               side: const BorderSide(color: Colors.black),
                             ),
+                          ),
+                          child: const Text(
+                            'Create Account',
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                       ],
