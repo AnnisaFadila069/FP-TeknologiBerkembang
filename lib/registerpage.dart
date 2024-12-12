@@ -181,10 +181,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () => register(context),
-                          child: const Text(
-                            'Create Account',
-                            style: TextStyle(color: Colors.black),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFE4DECF),
                             padding: const EdgeInsets.symmetric(
@@ -193,6 +189,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               borderRadius: BorderRadius.circular(15),
                               side: const BorderSide(color: Colors.black),
                             ),
+                          ),
+                          child: const Text(
+                            'Create Account',
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                       ],

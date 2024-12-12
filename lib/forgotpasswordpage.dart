@@ -6,6 +6,8 @@ class ForgotPasswordPage extends StatelessWidget {
   final _auth = AuthService();
   final TextEditingController emailController = TextEditingController();
 
+  ForgotPasswordPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,10 +120,6 @@ class ForgotPasswordPage extends StatelessWidget {
                   );
                 }
               },
-              child: const Text(
-                'Send Verification',
-                style: TextStyle(color: Colors.black),
-              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFE4DECF),
                 padding: const EdgeInsets.symmetric(
@@ -132,6 +130,10 @@ class ForgotPasswordPage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                   side: const BorderSide(color: Colors.black),
                 ),
+              ),
+              child: const Text(
+                'Send Verification',
+                style: TextStyle(color: Colors.black),
               ),
             ),
           ],

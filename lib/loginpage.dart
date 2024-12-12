@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'auth_service.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -45,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
     // Navigate to the main screen
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MainPage()),
+      MaterialPageRoute(builder: (context) => const MainPage()),
     );
   } else {
     _showErrorDialog(
@@ -166,10 +168,6 @@ class _LoginPageState extends State<LoginPage> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () => login(context),
-                          child: const Text(
-                            'Login',
-                            style: TextStyle(color: Colors.black),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFFE4DECF),
                             padding:
@@ -178,6 +176,10 @@ class _LoginPageState extends State<LoginPage> {
                               borderRadius: BorderRadius.circular(15),
                               side: const BorderSide(color: Colors.black),
                             ),
+                          ),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(color: Colors.black),
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -213,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.push(context,
                           MaterialPageRoute(builder:
                               (context) =>
-                                  RegisterPage()));
+                                  const RegisterPage()));
                     },
                       child:
                       const Text('Register Here',
