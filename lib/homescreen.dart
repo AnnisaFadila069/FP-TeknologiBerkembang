@@ -206,6 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     Container(
+
                       width: 175,
                       height: 275,
                       margin: const EdgeInsets.all(16.0),

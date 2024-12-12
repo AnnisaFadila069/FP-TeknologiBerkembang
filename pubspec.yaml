@@ -7,11 +7,18 @@ environment:
   sdk: ^3.5.4
 
 dependencies:
+  intl: ^0.18.0
+  firebase_core: ^3.8.0
+  firebase_auth: ^5.3.3
+  cloud_firestore: ^5.5.0
+  shared_preferences: ^2.1.0
+
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
   google_fonts: ^6.2.1
   smooth_page_indicator: ^1.2.0+3
+  path_provider: ^2.0.14
 
 dev_dependencies:
   flutter_test:
@@ -23,10 +30,15 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - Image/bumi_manusia.jpg
+    - Image/BookMate.png
+    - Image/onboarding1.png
+    - Image/onboarding2.png
+    - Image/onboarding3.png
+    - Image/Logo BookMate.png
+    - Image/bumi_manusia.jpg
     - Image/gadis_pantai.jpg
     - Image/mangir.jpg
-    - Image/anak_semua_bangsa_cover.jpg
-    - Image/Logo BookMate.png
+    - Image/anak_semua_bangsa.jpg
     - Image/arus_balik.jpg
     - Image/jejak_langkah.jpg
     - Image/bumi_manusia_cover.jpg
