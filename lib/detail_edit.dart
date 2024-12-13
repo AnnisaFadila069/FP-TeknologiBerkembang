@@ -691,7 +691,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
         CustomTextField(
           label: 'Title',
           hintText: tempTitle,
-          controller: TextEditingController(text: tempTitle),
+          controller: _titleController,
           onChanged: (value) {
             setState(() {
               tempTitle = value;
@@ -701,7 +701,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
         CustomTextField(
           label: 'Author',
           hintText: tempAuthor,
-          controller: TextEditingController(text: tempAuthor),
+          controller: _authorController,
           onChanged: (value) {
             setState(() {
               tempAuthor = value;
@@ -711,7 +711,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
         CustomTextField(
           label: 'Publisher',
           hintText: tempPublisher,
-          controller: TextEditingController(text: tempPublisher),
+          controller: _publisherController,
           onChanged: (value) {
             setState(() {
               tempPublisher = value;
@@ -777,7 +777,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
         CustomTextField(
           label: 'Description',
           hintText: tempDescription,
-          controller: TextEditingController(text: tempDescription),
+          controller: _descriptionController,
           maxLines: 4,
           onChanged: (value) {
             setState(() {
