@@ -5,12 +5,14 @@ class ResetPasswordPage extends StatelessWidget {
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
+  ResetPasswordPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF5F5EB),
+      backgroundColor: const Color(0xFFFDF6EC),
       appBar: AppBar(
-        backgroundColor: Color(0xFFF5F5EB),
+        backgroundColor: const Color(0xFFF5F5EB),
         elevation: 0,
       ),
       body: Column(
@@ -30,9 +32,9 @@ class ResetPasswordPage extends StatelessWidget {
                       width: 100,
                       height: 100,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     // Tulisan BookMate
-                    Text(
+                    const Text(
                       'BookMate',
                       style: TextStyle(
                         fontSize: 32,
@@ -40,7 +42,7 @@ class ResetPasswordPage extends StatelessWidget {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 30), // Jarak antara tulisan dan form
+                    const SizedBox(height: 30), // Jarak antara tulisan dan form
 
                     // Form New Password dan Confirm Password
                     Padding(
@@ -52,31 +54,31 @@ class ResetPasswordPage extends StatelessWidget {
                             decoration: InputDecoration(
                               hintText: 'New Password',
                               filled: true,
-                              fillColor: Color(0xFFE4DECF),
+                              fillColor: const Color(0xFFE4DECF),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              contentPadding: EdgeInsets.symmetric(
+                              contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 12),
                             ),
                             obscureText: true,
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           TextField(
                             controller: confirmPasswordController,
                             decoration: InputDecoration(
                               hintText: 'Confirm Password',
                               filled: true,
-                              fillColor: Color(0xFFE4DECF),
+                              fillColor: const Color(0xFFE4DECF),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(15),
                               ),
-                              contentPadding: EdgeInsets.symmetric(
+                              contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 16, vertical: 12),
                             ),
                             obscureText: true,
                           ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () {
                               // Tambahkan logika untuk memeriksa kecocokan password
@@ -93,11 +95,11 @@ class ResetPasswordPage extends StatelessWidget {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: Text('Error'),
-                                      content: Text('Passwords do not match!'),
+                                      title: const Text('Error'),
+                                      content: const Text('Passwords do not match!'),
                                       actions: [
                                         TextButton(
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -108,18 +110,18 @@ class ResetPasswordPage extends StatelessWidget {
                                 );
                               }
                             },
-                            child: Text(
-                              'Save',
-                              style: TextStyle(color: Colors.black),
-                            ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFFE4DECF),
-                              padding: EdgeInsets.symmetric(
+                              backgroundColor: const Color(0xFFE4DECF),
+                              padding: const EdgeInsets.symmetric(
                                   vertical: 12, horizontal: 40),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
-                                side: BorderSide(color: Colors.black),
+                                side: const BorderSide(color: Colors.black),
                               ),
+                            ),
+                            child: Text(
+                              'Save',
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                         ],
