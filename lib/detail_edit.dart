@@ -369,8 +369,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           onTap:
                               _selectImage, // Panggil fungsi pemilihan gambar
                           child: Container(
-                            width: 100,
-                            height: 140,
+                            width: 115,
+                            height: 165,
                             decoration: BoxDecoration(
                               color: const Color(0xFFE1DACA),
                               borderRadius: BorderRadius.circular(8),
