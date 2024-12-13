@@ -426,10 +426,6 @@ class _ProfilemenuState extends State<Profilemenu> {
             contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           ),
           dropdownColor: const Color(0xFFF5F5EB), // Warna dropdown
-          style: const TextStyle(
-            color: Colors.brown, // Warna teks dropdown
-            fontSize: 14,
-          ),
           icon: const Icon(Icons.arrow_drop_down,
               color: Color(0xFFB3907A)), // Warna ikon
         ),
