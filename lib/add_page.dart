@@ -33,7 +33,6 @@ class _AddPageState extends State<AddPage> {
     'Image/arus_balik.jpg',
     'Image/jejak_langkah.jpg',
     'Image/bumi_manusia_cover.jpg',
-    'Image/logo_bookmate.png',
     'Image/filosofi_teras_cover.jpg',
     'Image/gadis_pantai_cover.jpg',
     'Image/hujan_cover.jpg',
@@ -170,13 +169,6 @@ class _AddPageState extends State<AddPage> {
         );
       },
     );
-
-    if (selectedImage != null) {
-      setState(() {
-        imagePath = selectedImage;
-      });
-    }
-  }
 
     if (selectedImage != null) {
       setState(() {
