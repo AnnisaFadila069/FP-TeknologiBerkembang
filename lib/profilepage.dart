@@ -97,16 +97,27 @@ class _ProfilePageState extends State<ProfilePage> {
           title: const Text('Select an Image'),
           content: SizedBox(
             width: double.maxFinite,
-            child: ListView.builder(
+            height: 300, // Sesuaikan tinggi galeri
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Menampilkan 3 kolom
+                crossAxisSpacing: 8.0, // Spasi antar kolom
+                mainAxisSpacing: 8.0, // Spasi antar baris
+                childAspectRatio: 3 / 4, // Rasio lebar:tinggi
+              ),
               itemCount: availableImages.length,
               itemBuilder: (context, index) {
                 final imagePath = availableImages[index];
-                return ListTile(
-                  leading: Image.asset(imagePath, width: 50, height: 50),
-                  title: Text('Image ${index + 1}'),
+                return GestureDetector(
                   onTap: () {
                     Navigator.pop(context, imagePath); // Kembalikan path gambar
                   },
+                  child: GridTile(
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover, // Sesuaikan gambar agar pas
+                    ),
+                  ),
                 );
               },
             ),
