@@ -203,8 +203,8 @@ class _AddPageState extends State<AddPage> {
                     child: GestureDetector(
                       onTap: _selectImage, // Panggil fungsi pemilihan gambar
                       child: Container(
-                        width: 140,
-                        height: 200,
+                        width: 155,
+                        height: 225,
                         decoration: BoxDecoration(
                           color: const Color(0xFFE1DACA),
                           borderRadius: BorderRadius.circular(16),
