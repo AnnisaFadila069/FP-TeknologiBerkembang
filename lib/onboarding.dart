@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'registerpage.dart'; // Impor RegisterPage
+import 'loginpage.dart'; // Impor RegisterPage
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -112,7 +112,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const RegisterPage(),
+                            builder: (context) => const LoginPage(),
                           ),
                         );
                       } else {
