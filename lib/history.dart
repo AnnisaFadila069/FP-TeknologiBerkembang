@@ -170,8 +170,8 @@ class _HistoryPageState extends State<HistoryPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 100,
-                      height: 150,
+                      width: 120,
+                      height: 165,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8.0),
@@ -187,8 +187,8 @@ class _HistoryPageState extends State<HistoryPage>
                               child: Image.network(
                                 imagePath, // Path gambar dari Firestore
                                 fit: BoxFit.cover,
-                                width: 100,
-                                height: 150,
+                                width: 120,
+                                height: 165,
                                 errorBuilder: (context, error, stackTrace) =>
                                     const Icon(Icons.broken_image, size: 50),
                               ),
@@ -281,8 +281,8 @@ class _HistoryPageState extends State<HistoryPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 100,
-                      height: 150,
+                      width: 120,
+                      height: 165,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8.0),
@@ -298,8 +298,8 @@ class _HistoryPageState extends State<HistoryPage>
                               child: Image.network(
                                 imagePath, // Path gambar dari Firestore
                                 fit: BoxFit.cover,
-                                width: 100,
-                                height: 150,
+                                width: 120,
+                                height: 165,
                                 errorBuilder: (context, error, stackTrace) =>
                                     const Icon(Icons.broken_image, size: 50),
                               ),
@@ -393,8 +393,8 @@ class _HistoryPageState extends State<HistoryPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 100,
-                      height: 150,
+                      width: 120,
+                      height: 165,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8.0),
@@ -410,8 +410,8 @@ class _HistoryPageState extends State<HistoryPage>
                               child: Image.network(
                                 imagePath, // Path gambar dari Firestore
                                 fit: BoxFit.cover,
-                                width: 100,
-                                height: 150,
+                                width: 120,
+                                height: 165,
                                 errorBuilder: (context, error, stackTrace) =>
                                     const Icon(Icons.broken_image, size: 50),
                               ),
@@ -513,8 +513,8 @@ class _HistoryPageState extends State<HistoryPage>
             child: Row(
               children: [
                 Container(
-                  width: 100,
-                  height: 150,
+                  width: 120,
+                  height: 165,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(
