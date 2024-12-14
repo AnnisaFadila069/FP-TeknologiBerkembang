@@ -38,16 +38,23 @@ class ForgotPasswordPage extends StatelessWidget {
               decoration: InputDecoration(
                 hintText: 'Email',
                 filled: true,
-                fillColor: const Color(0xFFE4DECF),
+                fillColor: const Color(0xFFE4DECF), // Background TextField
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(15), // Border radius untuk TextField
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 12,
                 ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15), 
+                  borderSide: const BorderSide(
+                    color: Colors.brown, 
+                  ),
+                ),
               ),
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: TextInputType.emailAddress, 
+              cursorColor: Colors.brown, 
             ),
             const SizedBox(height: 20),
             ElevatedButton(
