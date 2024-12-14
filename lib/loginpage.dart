@@ -136,14 +136,18 @@ class _LoginPageState extends State<LoginPage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(color: Colors.brown),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 15),
                         TextField(
                           controller: passwordController,
-                          obscureText: _obscureText,
+                          obscureText: _obscureText, // Untuk menyembunyikan teks
+                          cursorColor: Colors.brown, // Ganti warna kursor jika perlu
                           decoration: InputDecoration(
                             hintText: 'Password',
                             filled: true,
@@ -151,11 +155,15 @@ class _LoginPageState extends State<LoginPage> {
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(color: Colors.brown),
+                            ),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscureText ? Icons.visibility : Icons.visibility_off,
+                                color: Colors.black, // Ganti warna ikon sesuai kebutuhan
                               ),
                               onPressed: () {
                                 setState(() {
