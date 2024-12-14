@@ -267,9 +267,9 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         TextField(
           controller: controller,
+          cursorColor: const Color(0xFFB3907A), // Ganti warna kursor menjadi coklat
           keyboardType: isNumeric ? TextInputType.phone : keyboardType,
-          inputFormatters:
-              isNumeric ? [FilteringTextInputFormatter.digitsOnly] : [],
+          inputFormatters: isNumeric ? [FilteringTextInputFormatter.digitsOnly] : [],
           onChanged: (value) {
             if (isNumeric && !RegExp(r'^\d*$').hasMatch(value)) {
               controller.text = value.replaceAll(RegExp(r'\D'), '');
@@ -304,16 +304,15 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         TextField(
           controller: dateOfBirthController,
+          cursorColor: const Color(0xFFB3907A), // Ganti warna kursor menjadi coklat
           readOnly: true,
           decoration: InputDecoration(
             filled: true,
-            fillColor: const Color(0xFFF5F5EB), // Warna yang sama
+            fillColor: const Color(0xFFF5F5EB),
             border: InputBorder.none,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             suffixIcon: IconButton(
-              icon: const Icon(Icons.calendar_today,
-                  color: Color(0xFFB3907A)), // Warna ikon
+              icon: const Icon(Icons.calendar_today, color: Color(0xFFB3907A)),
               onPressed: () async {
                 DateTime? pickedDate = await showDatePicker(
                   context: context,
