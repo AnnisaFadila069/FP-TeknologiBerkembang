@@ -147,11 +147,17 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: InputDecoration(
                             hintText: 'Username',
                             filled: true,
-                            fillColor: const Color(0xFFE4DECF),
+                            fillColor: const Color(0xFFE4DECF), // Warna latar belakang
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(color: Colors.brown)
+                            ),
                           ),
+                          cursorColor: Colors.brown, // Warna kursor
                         ),
                         const SizedBox(height: 15),
                         TextField(
@@ -159,11 +165,18 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: InputDecoration(
                             hintText: 'Email',
                             filled: true,
-                            fillColor: const Color(0xFFE4DECF),
+                            fillColor: const Color(0xFFE4DECF), // Warna latar belakang
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
                             ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(color: Colors.brown)
+                            ),
                           ),
+                          keyboardType: TextInputType.emailAddress, // Keyboard untuk email
+                          cursorColor: Colors.brown, // Warna kursor
                         ),
                         const SizedBox(height: 15),
                         TextField(
@@ -174,6 +187,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             fillColor: const Color(0xFFE4DECF),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(15),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: const BorderSide(color: Colors.brown), // Ganti warna fokus sesuai kebutuhan
                             ),
                           ),
                           obscureText: true,
