@@ -148,167 +148,188 @@ class _ProfilemenuState extends State<Profilemenu> {
       backgroundColor: const Color(0xFFF5F5EB),
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
-          child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Bagian atas: Tombol back dan Profile
-                    Row(
-                      children: [
-                        IconButton(
-                          icon:
-                              const Icon(Icons.arrow_back, color: Colors.black),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                        const SizedBox(width: 10),
-                        const Text(
-                          'Profile',
-                          style: TextStyle(
-                            fontFamily: 'BeVietnamPro',
-                            color: Colors.black,
-                            fontSize: 23,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Bagian atas: Tombol back dan Profile
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    'Profile',
+                    style: TextStyle(
+                      fontFamily: 'BeVietnamPro',
+                      color: Colors.black,
+                      fontSize: 23,
+                      fontWeight: FontWeight.w500,
                     ),
-                    const SizedBox(height: 20),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
 
-                    // Foto Profil
-                    Center(
-                      child: Stack(
-                        children: [
-                          CircleAvatar(
-                            radius: 70,
-                            backgroundColor: const Color(0xFFB3907A),
-                            child: CircleAvatar(
-                              radius: 66,
-                              backgroundImage: imagePath.isEmpty
-                                  ? const AssetImage('Image/profile.jpg')
-                                  : AssetImage(imagePath),
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 0,
-                            right: 4,
-                            child: GestureDetector(
-                              onTap: _selectImage, // Ganti dengan fungsi baru
-                              child: Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFB3907A),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.edit,
-                                  color: Color(0xFFF5F5EB),
-                                  size: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+              // Foto Profil
+              Center(
+                child: Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 70,
+                      backgroundColor: const Color(0xFFB3907A),
+                      child: CircleAvatar(
+                        radius: 66,
+                        backgroundImage: imagePath.isEmpty
+                            ? const AssetImage('Image/profile.jpg')
+                            : AssetImage(imagePath),
                       ),
                     ),
-                    const SizedBox(height: 15),
-                    // Pastikan konten lain cukup ruang dengan scroll
-                    _buildLabeledFormField('Full Name', fullNameController),
-                    _buildLabeledFormField(
-                        'Phone Number', phoneNumberController,
-                        isNumeric: true),
-                    _buildDateOfBirthField(),
-                    _buildGenderDropdown(),
-                    const SizedBox(height: 20),
-                    // Tombol Save
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await _saveProfile();
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()),
-                            (Route<dynamic> route) => false,
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFB3907A),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 16, horizontal: 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                            side: const BorderSide(color: Colors.black),
+                    Positioned(
+                      bottom: 0,
+                      right: 4,
+                      child: GestureDetector(
+                        onTap: _selectImage, // Ganti dengan fungsi baru
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFB3907A),
+                            shape: BoxShape.circle,
                           ),
-                        ),
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(color: Colors.white, fontSize: 18),
+                          child: const Icon(
+                            Icons.edit,
+                            color: Color(0xFFF5F5EB),
+                            size: 20,
+                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    TextButton(
-                      onPressed: () async {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Confirm Logout'),
-                              content: const Text(
-                                  'Are you sure you want to logout?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    Navigator.of(context).pop();
-                                    try {
-                                      await FirebaseAuth.instance
-                                          .signOut(); // Proses logout
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LoginPage()),
-                                        (Route<dynamic> route) => false,
-                                      );
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        SnackBar(
-                                            content: Text("Logout failed: $e")),
-                                      );
-                                    }
-                                  },
-                                  child: const Text('Logout'),
-                                ),
-                              ],
-                            );
-                          },
+                  ],
+                ),
+              ),
+              const SizedBox(height: 15),
+              _buildLabeledFormField('Full Name', fullNameController),
+              _buildLabeledFormField('Phone Number', phoneNumberController,
+                  isNumeric: true),
+              _buildDateOfBirthField(),
+              _buildGenderDropdown(),
+              const SizedBox(height: 20),
+              // Tombol Save
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await _saveProfile();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFB3907A),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      side: const BorderSide(color: Colors.black),
+                    ),
+                  ),
+                  child: const Text(
+                    'Save',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              // Tombol Logout
+              Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Confirm Logout'),
+                          content: const Text(
+                              'Are you sure you want to logout?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                try {
+                                  await FirebaseAuth.instance.signOut();
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginPage()),
+                                    (Route<dynamic> route) => false,
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text("Logout failed: $e")),
+                                  );
+                                }
+                              },
+                              child: const Text('Logout'),
+                            ),
+                          ],
                         );
                       },
-                      style: TextButton.styleFrom(
-                        foregroundColor:
-                            Colors.red, // Ubah warna teks menjadi merah
-                      ),
-                      child: const Center(
-                        // Memastikan tombol ada di tengah
-                        child: Text(
-                          'Logout',
-                          style: TextStyle(
-                            fontSize: 16, // Ukuran font opsional
-                            fontWeight:
-                                FontWeight.bold, // Menambah tebal teks opsional
-                          ),
-                        ),
-                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                  ]))),
+                  ).copyWith(
+                    backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) {
+                        if (states.contains(MaterialState.hovered) ||
+                            states.contains(MaterialState.focused)) {
+                          return Colors.white;
+                        }
+                        return Colors.red;
+                      },
+                    ),
+                    foregroundColor: MaterialStateProperty.resolveWith(
+                      (states) {
+                        if (states.contains(MaterialState.hovered) ||
+                            states.contains(MaterialState.focused)) {
+                          return Colors.red;
+                        }
+                        return Colors.white;
+                      },
+                    ),
+                  ),
+                  child: const Text(
+                    'Logout',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -328,6 +349,7 @@ class _ProfilemenuState extends State<Profilemenu> {
         ),
         TextField(
           controller: controller,
+          cursorColor: const Color(0xFFB3907A), // Warna kursor
           keyboardType: isNumeric ? TextInputType.phone : keyboardType,
           inputFormatters:
               isNumeric ? [FilteringTextInputFormatter.digitsOnly] : [],
@@ -365,6 +387,7 @@ class _ProfilemenuState extends State<Profilemenu> {
         ),
         TextField(
           controller: dateOfBirthController,
+          cursorColor: const Color(0xFFB3907A), // Warna kursor
           readOnly: true,
           decoration: InputDecoration(
             filled: true,
