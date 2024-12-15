@@ -529,17 +529,28 @@ class _BookDetailPageState extends State<BookDetailPage> {
           title: const Text('Select an Image'),
           content: SizedBox(
             width: double.maxFinite,
-            child: ListView.builder(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Jumlah kolom
+                crossAxisSpacing: 8.0, // Jarak horizontal antar item
+                mainAxisSpacing: 8.0, // Jarak vertikal antar item
+                childAspectRatio: 3 / 4, // Rasio lebar:tinggi (atur di sini)
+              ),
               itemCount: availableImages.length,
               itemBuilder: (context, index) {
                 final imagePath = availableImages[index];
-                return ListTile(
-                  leading: Image.asset(imagePath, width: 50, height: 50),
-                  title: Text('Image ${index + 1}'),
+                return GestureDetector(
                   onTap: () {
-                    Navigator.pop(
-                        context, imagePath); // Return the selected image
+                    Navigator.pop(context, imagePath); // Kembalikan path gambar
                   },
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(8.0), // Membuat sudut melengkung
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 );
               },
             ),
