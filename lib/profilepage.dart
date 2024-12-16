@@ -34,6 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    // Ambil username dari widget
     fullNameController.text = widget.username;
     _loadProfileData();
   }
@@ -46,10 +47,11 @@ class _ProfilePageState extends State<ProfilePage> {
       final data = snapshot.data();
       if (data != null) {
         setState(() {
-          imagePath = data['imagePath'] ?? '';
+          fullNameController.text = data['fullName'] ?? widget.username;
           phoneNumberController.text = data['phoneNumber'] ?? '';
           dateOfBirthController.text = data['dateOfBirth'] ?? '';
           selectedGender = data['gender'] ?? 'Male';
+          imagePath = data['imagePath'] ?? '';
         });
       }
     }
@@ -267,9 +269,11 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         TextField(
           controller: controller,
-          cursorColor: const Color(0xFFB3907A), // Ganti warna kursor menjadi coklat
+          cursorColor:
+              const Color(0xFFB3907A), // Ganti warna kursor menjadi coklat
           keyboardType: isNumeric ? TextInputType.phone : keyboardType,
-          inputFormatters: isNumeric ? [FilteringTextInputFormatter.digitsOnly] : [],
+          inputFormatters:
+              isNumeric ? [FilteringTextInputFormatter.digitsOnly] : [],
           onChanged: (value) {
             if (isNumeric && !RegExp(r'^\d*$').hasMatch(value)) {
               controller.text = value.replaceAll(RegExp(r'\D'), '');
@@ -304,13 +308,15 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
         TextField(
           controller: dateOfBirthController,
-          cursorColor: const Color(0xFFB3907A), // Ganti warna kursor menjadi coklat
+          cursorColor:
+              const Color(0xFFB3907A), // Ganti warna kursor menjadi coklat
           readOnly: true,
           decoration: InputDecoration(
             filled: true,
             fillColor: const Color(0xFFF5F5EB),
             border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             suffixIcon: IconButton(
               icon: const Icon(Icons.calendar_today, color: Color(0xFFB3907A)),
               onPressed: () async {
