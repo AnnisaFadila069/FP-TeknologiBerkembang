@@ -31,7 +31,7 @@ class _HistoryPageState extends State<HistoryPage>
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false, // Menghilangkan tombol back
-        backgroundColor: const Color(0xFFFDF6EC), // Warna latar AppBar
+        backgroundColor: const Color(0xFFEFE7DA), // Warna latar AppBar
         elevation: 0, // Hilangkan bayangan
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,47 +55,49 @@ class _HistoryPageState extends State<HistoryPage>
               ],
             ),
             const SizedBox(height: 4), // Jarak sebelum garis
-            const Divider(
-              color: Color(0xfffc1b6a3), // Warna garis
-              thickness: 0.5, // Ketebalan garis
-              height: 1, // Tinggi Divider
-            ),
           ],
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(68),
+          preferredSize: const Size.fromHeight(65),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
             child: Container(
+              height: 50,
               decoration: BoxDecoration(
-                color: const Color(0xFFD9C6AB), // Warna latar belakang tab
-                borderRadius: BorderRadius.circular(15),
+                color: const Color(0xFFC1B6A3), // Warna latar belakang tab
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: TabBar(
                 controller: _tabController,
                 indicator: BoxDecoration(
-                  color: const Color(0xffff5f5eb), // Warna untuk tab aktif
-                  borderRadius: BorderRadius.circular(15),
+                  color: Color(0xFFEFE7DA), // Warna untuk tab aktif
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                labelColor: const Color(0xfffb3907a), // Warna teks tab aktif
-                unselectedLabelColor:
-                    const Color(0xffff5f5eb), // Warna teks tab tidak aktif
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                labelColor: const Color(0xFF6D4C41), // Warna teks tab aktif
+                unselectedLabelColor: Color(0xFF6D4C41), // Warna teks tab tidak aktif
+                labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                 tabs: [
                   Container(
-                    width: 60, // Lebar setiap tab
-                    alignment: Alignment.center,
-                    child: const Text('WishList'),
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                    child: const Tab(text: 'WishList'),
                   ),
                   Container(
-                    width: 60,
-                    alignment: Alignment.center,
-                    child: const Text('Readed'),
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                    child: const Tab(text: 'Readed'),
                   ),
                   Container(
-                    width: 60,
-                    alignment: Alignment.center,
-                    child: const Text('Favorite'),
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                    child: const Tab(text: 'Favorite')
                   ),
                 ],
               ),
@@ -103,7 +105,7 @@ class _HistoryPageState extends State<HistoryPage>
           ),
         ),
       ),
-      backgroundColor: const Color(0xFFF9F6F1),
+      backgroundColor: const Color(0xFFEFE7DA),
       body: IndexedStack(
         index: _selectedBottomNavIndex,
         children: [
@@ -170,8 +172,8 @@ class _HistoryPageState extends State<HistoryPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 120,
-                      height: 165,
+                      width: 100,
+                      height: 150,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8.0),
@@ -187,8 +189,8 @@ class _HistoryPageState extends State<HistoryPage>
                               child: Image.network(
                                 imagePath, // Path gambar dari Firestore
                                 fit: BoxFit.cover,
-                                width: 120,
-                                height: 165,
+                                width: 100,
+                                height: 150,
                                 errorBuilder: (context, error, stackTrace) =>
                                     const Icon(Icons.broken_image, size: 50),
                               ),
@@ -281,8 +283,8 @@ class _HistoryPageState extends State<HistoryPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 120,
-                      height: 165,
+                      width: 100,
+                      height: 150,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8.0),
@@ -298,8 +300,8 @@ class _HistoryPageState extends State<HistoryPage>
                               child: Image.network(
                                 imagePath, // Path gambar dari Firestore
                                 fit: BoxFit.cover,
-                                width: 120,
-                                height: 165,
+                                width: 100,
+                                height: 150,
                                 errorBuilder: (context, error, stackTrace) =>
                                     const Icon(Icons.broken_image, size: 50),
                               ),
@@ -393,8 +395,8 @@ class _HistoryPageState extends State<HistoryPage>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 120,
-                      height: 165,
+                      width: 100,
+                      height: 150,
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
                           topLeft: Radius.circular(8.0),
@@ -410,8 +412,8 @@ class _HistoryPageState extends State<HistoryPage>
                               child: Image.network(
                                 imagePath, // Path gambar dari Firestore
                                 fit: BoxFit.cover,
-                                width: 120,
-                                height: 165,
+                                width: 100,
+                                height: 150,
                                 errorBuilder: (context, error, stackTrace) =>
                                     const Icon(Icons.broken_image, size: 50),
                               ),
@@ -513,8 +515,8 @@ class _HistoryPageState extends State<HistoryPage>
             child: Row(
               children: [
                 Container(
-                  width: 120,
-                  height: 165,
+                  width: 100,
+                  height: 150,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     image: DecorationImage(

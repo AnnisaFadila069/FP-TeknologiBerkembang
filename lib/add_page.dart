@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'homescreen.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -120,7 +121,9 @@ class _AddPageState extends State<AddPage> {
       );
 
       // Pindah ke halaman Home
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacement( context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
