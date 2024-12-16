@@ -257,104 +257,6 @@ class _BookDetailPageState extends State<BookDetailPage> {
     }
   }
 
-  Future<void> _confirmAndSaveBook() async {
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirm Changes'),
-        content: const Text('Are you sure you want to save the changes?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              // Rollback semua data ke awal
-              setState(() {
-                tempTitle = initialTitle;
-                tempAuthor = initialAuthor;
-                tempPublisher = initialPublisher;
-                tempDescription = initialDescription;
-                tempCategory = initialCategory;
-                tempStatus = initialStatus;
-
-                // Rollback notes
-                tempNotesStartDate = initialNotesStartDate;
-                tempNotesEndDate = initialNotesEndDate;
-                tempShortNote = initialShortNote;
-                tempReview = initialReview;
-                tempIsFavorite = initialIsFavorite;
-
-                // Perbarui controller untuk memastikan tampilan sinkron
-                notesStartDateController.text = tempNotesStartDate != null
-                    ? DateFormat('dd-MM-yyyy').format(tempNotesStartDate!)
-                    : '';
-                notesEndDateController.text = tempNotesEndDate != null
-                    ? DateFormat('dd-MM-yyyy').format(tempNotesEndDate!)
-                    : '';
-                shortNoteController.text = tempShortNote;
-                reviewController.text = tempReview;
-              });
-              Navigator.pop(context, false); // Tutup dialog
-            },
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Yes'),
-          ),
-        ],
-      ),
-    );
-
-    if (confirm == true) {
-      await _saveBook();
-    }
-  }
-
-  Future<void> _saveBook() async {
-    await _firestore.collection('books').doc(widget.bookId).update({
-      'title': tempTitle,
-      'author': tempAuthor,
-      'publisher': tempPublisher,
-      'description': tempDescription,
-      'category': tempCategory,
-      'status': tempStatus,
-      'imagePath': imagePath,
-      'notes': {
-        'notesStartDate': tempNotesStartDate != null
-            ? Timestamp.fromDate(tempNotesStartDate!)
-            : null,
-        'notesEndDate': tempNotesEndDate != null
-            ? Timestamp.fromDate(tempNotesEndDate!)
-            : null,
-        'shortNote': tempShortNote,
-        'review': tempReview,
-        'isFavorite': tempIsFavorite,
-      },
-    });
-
-    setState(() {
-      // Perbarui data utama setelah menyimpan
-      initialTitle = tempTitle;
-      initialAuthor = tempAuthor;
-      initialPublisher = tempPublisher;
-      initialDescription = tempDescription;
-      initialCategory = tempCategory;
-      initialStatus = tempStatus;
-
-      initialNotesStartDate = tempNotesStartDate;
-      initialNotesEndDate = tempNotesEndDate;
-      initialShortNote = tempShortNote;
-      initialReview = tempReview;
-      initialIsFavorite = tempIsFavorite;
-
-      isEditing = false; // Keluar dari mode editing
-    });
-  }
-
-  Future<void> _deleteBook() async {
-    await _firestore.collection('books').doc(widget.bookId).delete();
-    Navigator.pop(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -891,6 +793,104 @@ class _BookDetailPageState extends State<BookDetailPage> {
         ),
       ],
     );
+  }
+
+  Future<void> _confirmAndSaveBook() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Changes'),
+        content: const Text('Are you sure you want to save the changes?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              // Rollback semua data ke awal
+              setState(() {
+                tempTitle = initialTitle;
+                tempAuthor = initialAuthor;
+                tempPublisher = initialPublisher;
+                tempDescription = initialDescription;
+                tempCategory = initialCategory;
+                tempStatus = initialStatus;
+
+                // Rollback notes
+                tempNotesStartDate = initialNotesStartDate;
+                tempNotesEndDate = initialNotesEndDate;
+                tempShortNote = initialShortNote;
+                tempReview = initialReview;
+                tempIsFavorite = initialIsFavorite;
+
+                // Perbarui controller untuk memastikan tampilan sinkron
+                notesStartDateController.text = tempNotesStartDate != null
+                    ? DateFormat('dd-MM-yyyy').format(tempNotesStartDate!)
+                    : '';
+                notesEndDateController.text = tempNotesEndDate != null
+                    ? DateFormat('dd-MM-yyyy').format(tempNotesEndDate!)
+                    : '';
+                shortNoteController.text = tempShortNote;
+                reviewController.text = tempReview;
+              });
+              Navigator.pop(context, false); // Tutup dialog
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Yes'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await _saveBook();
+    }
+  }
+
+  Future<void> _saveBook() async {
+    await _firestore.collection('books').doc(widget.bookId).update({
+      'title': tempTitle,
+      'author': tempAuthor,
+      'publisher': tempPublisher,
+      'description': tempDescription,
+      'category': tempCategory,
+      'status': tempStatus,
+      'imagePath': imagePath,
+      'notes': {
+        'notesStartDate': tempNotesStartDate != null
+            ? Timestamp.fromDate(tempNotesStartDate!)
+            : null,
+        'notesEndDate': tempNotesEndDate != null
+            ? Timestamp.fromDate(tempNotesEndDate!)
+            : null,
+        'shortNote': tempShortNote,
+        'review': tempReview,
+        'isFavorite': tempIsFavorite,
+      },
+    });
+
+    setState(() {
+      // Perbarui data utama setelah menyimpan
+      initialTitle = tempTitle;
+      initialAuthor = tempAuthor;
+      initialPublisher = tempPublisher;
+      initialDescription = tempDescription;
+      initialCategory = tempCategory;
+      initialStatus = tempStatus;
+
+      initialNotesStartDate = tempNotesStartDate;
+      initialNotesEndDate = tempNotesEndDate;
+      initialShortNote = tempShortNote;
+      initialReview = tempReview;
+      initialIsFavorite = tempIsFavorite;
+
+      isEditing = false; // Keluar dari mode editing
+    });
+  }
+
+  Future<void> _deleteBook() async {
+    await _firestore.collection('books').doc(widget.bookId).delete();
+    Navigator.pop(context);
   }
 
   @override
