@@ -5,6 +5,7 @@ import 'detail_edit.dart';
 import 'loginpage.dart';
 import 'add_page.dart';
 import 'search.dart';
+import 'profilepage.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,35 +21,88 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEFE7DA),
+      backgroundColor: const Color(0xFFF9F6F1),
       appBar: AppBar(
-        backgroundColor: const Color(0xFFEFE7DA),
+        backgroundColor: const Color(0xFFF9F6F1),
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            Image.asset(
-              'Image/logo_bookmate.png',
-              width: 48,
-              height: 48,
-            ),
-            const SizedBox(width: 8.0),
-            const Text(
-              'BookMate',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF6D4C41),
+        toolbarHeight: 50, // Atur tinggi AppBar
+        title: Padding(
+          padding: const EdgeInsets.only(top: 16.0), // Menurunkan elemen
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'Image/logo_bookmate.png',
+                width: 48, // Perbesar logo jika diperlukan
+                height: 48,
               ),
-            ),
-          ],
+              const SizedBox(width: 8.0),
+              const Text(
+                'BookMate',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF6D4C41),
+                ),
+              ),
+            ],
+          ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout, color: Color(0xFF6D4C41)),
-            onPressed: () {
-              _showLogoutConfirmationDialog(context);
-            },
+          Padding(
+            padding: const EdgeInsets.only(top: 12.0), // Menurunkan ikon
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: IconButton(
+                icon: const Icon(Icons.person),
+                onPressed: () async {
+                  final user = FirebaseAuth.instance.currentUser;
+                  if (user != null) {
+                    // Ambil data pengguna dari Firestore
+                    final snapshot = await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user.uid)
+                        .get();
+                    final userData = snapshot.data();
+
+                    if (userData != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(
+                            username: userData['fullName'] ?? 'Unknown',
+                            email: user.email ?? 'No Email',
+                          ),
+                        ),
+                      );
+                    } else {
+                      // Data pengguna tidak ditemukan
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Failed to load user data')),
+                      );
+                    }
+                  }
+                },
+              ),
+            ),
+          ),
+          // Ikon Logout
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 12.0),
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: IconButton(
+                icon: const Icon(Icons.logout,
+                    size: 25, color: Color(0xFF6D4C41)),
+                onPressed: () {
+                  _showLogoutConfirmationDialog(context);
+                },
+              ),
+            ),
           ),
         ],
       ),
@@ -89,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
           StreamBuilder<QuerySnapshot>(
             stream: _firestore
                 .collection('books')
-                .orderBy('created_at', descending: true)
+                .where('user_id', isEqualTo: _auth.currentUser?.uid)
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -99,8 +153,8 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               if (snapshot.hasError) {
                 return SliverToBoxAdapter(
-                  child: const Center(
-                      child: Text('An error occurred. Please try again.')),
+                  child: Center(
+                      child: Text('An error occurred. Please try again. ${snapshot.error}')),
                 );
               }
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -206,9 +260,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   children: [
                     Container(
-
-                      width: 175,
-                      height: 275,
+                      width: 150,
+                      height: 225,
                       margin: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
@@ -277,6 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Judul Kategori
           Text(
             category,
             style: const TextStyle(
@@ -285,8 +339,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 8.0),
+          // Daftar Buku
           SizedBox(
-            height: 150,
+            height: 200, // Tinggi total item (termasuk gambar dan teks)
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: books.length,
@@ -306,10 +361,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        // Gambar Buku
                         Container(
-                          width: 100,
-                          height: 120,
+                          width: 115,
+                          height: 165,
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(8.0),
@@ -329,16 +386,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               : null,
                         ),
                         const SizedBox(height: 8.0),
+                        // Judul Buku
                         SizedBox(
-                          width:
-                              100, // Batas lebar teks agar sesuai dengan lebar gambar
+                          width: 100, // Menyesuaikan lebar teks dengan gambar
                           child: Text(
                             book['title'] ?? 'No Title',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontSize: 12.0),
-                            textAlign: TextAlign
-                                .center, // Optional untuk sentralisasi teks
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ],

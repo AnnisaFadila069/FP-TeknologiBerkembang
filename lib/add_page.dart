@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'homescreen.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key});
@@ -33,7 +34,6 @@ class _AddPageState extends State<AddPage> {
     'Image/arus_balik.jpg',
     'Image/jejak_langkah.jpg',
     'Image/bumi_manusia_cover.jpg',
-    'Image/logo_bookmate.png',
     'Image/filosofi_teras_cover.jpg',
     'Image/gadis_pantai_cover.jpg',
     'Image/hujan_cover.jpg',
@@ -121,7 +121,9 @@ class _AddPageState extends State<AddPage> {
       );
 
       // Pindah ke halaman Home
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacement( context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
@@ -141,16 +143,28 @@ class _AddPageState extends State<AddPage> {
           title: const Text('Select an Image'),
           content: SizedBox(
             width: double.maxFinite,
-            child: ListView.builder(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, // Jumlah kolom
+                crossAxisSpacing: 8.0, // Jarak horizontal antar item
+                mainAxisSpacing: 8.0, // Jarak vertikal antar item
+                childAspectRatio: 3 / 4, // Rasio lebar:tinggi (atur di sini)
+              ),
               itemCount: availableImages.length,
               itemBuilder: (context, index) {
                 final imagePath = availableImages[index];
-                return ListTile(
-                  leading: Image.asset(imagePath, width: 50, height: 50),
-                  title: Text('Image ${index + 1}'),
+                return GestureDetector(
                   onTap: () {
                     Navigator.pop(context, imagePath); // Kembalikan path gambar
                   },
+                  child: ClipRRect(
+                    borderRadius:
+                        BorderRadius.circular(8.0), // Membuat sudut melengkung
+                    child: Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 );
               },
             ),
@@ -203,8 +217,8 @@ class _AddPageState extends State<AddPage> {
                     child: GestureDetector(
                       onTap: _selectImage, // Panggil fungsi pemilihan gambar
                       child: Container(
-                        width: 140,
-                        height: 200,
+                        width: 155,
+                        height: 225,
                         decoration: BoxDecoration(
                           color: const Color(0xFFE1DACA),
                           borderRadius: BorderRadius.circular(16),

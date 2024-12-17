@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fp_kelompok3/detail_edit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -14,10 +16,14 @@ class _HistoryPageState extends State<HistoryPage>
   late TabController _tabController;
   final int _selectedBottomNavIndex = 0; // Untuk kontrol BottomNavigationBar
 
+  late String user_id;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    final user = FirebaseAuth.instance.currentUser;
+    user_id = user?.uid ?? ''; // Ambil userId dari user yang login
   }
 
   @override
@@ -31,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage>
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false, // Menghilangkan tombol back
-        backgroundColor: const Color(0xFFFDF6EC), // Warna latar AppBar
+        backgroundColor: const Color(0xFFEFE7DA), // Warna latar AppBar
         elevation: 0, // Hilangkan bayangan
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,47 +61,49 @@ class _HistoryPageState extends State<HistoryPage>
               ],
             ),
             const SizedBox(height: 4), // Jarak sebelum garis
-            const Divider(
-              color: Color(0xfffc1b6a3), // Warna garis
-              thickness: 0.5, // Ketebalan garis
-              height: 1, // Tinggi Divider
-            ),
           ],
         ),
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(68),
+          preferredSize: const Size.fromHeight(65),
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
             child: Container(
+              height: 50,
               decoration: BoxDecoration(
-                color: const Color(0xFFD9C6AB), // Warna latar belakang tab
-                borderRadius: BorderRadius.circular(15),
+                color: const Color(0xFFC1B6A3), // Warna latar belakang tab
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: TabBar(
                 controller: _tabController,
                 indicator: BoxDecoration(
-                  color: const Color(0xffff5f5eb), // Warna untuk tab aktif
-                  borderRadius: BorderRadius.circular(15),
+                  color: Color(0xFFEFE7DA), // Warna untuk tab aktif
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                labelColor: const Color(0xfffb3907a), // Warna teks tab aktif
-                unselectedLabelColor:
-                    const Color(0xffff5f5eb), // Warna teks tab tidak aktif
+                indicatorSize: TabBarIndicatorSize.tab,
+                indicatorPadding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                labelPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                labelColor: const Color(0xFF6D4C41), // Warna teks tab aktif
+                unselectedLabelColor: Color(0xFF6D4C41), // Warna teks tab tidak aktif
+                labelStyle: const TextStyle(fontWeight: FontWeight.bold),
                 tabs: [
                   Container(
-                    width: 60, // Lebar setiap tab
-                    alignment: Alignment.center,
-                    child: const Text('WishList'),
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                    child: const Tab(text: 'WishList'),
                   ),
                   Container(
-                    width: 60,
-                    alignment: Alignment.center,
-                    child: const Text('Readed'),
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                    child: const Tab(text: 'Readed'),
                   ),
                   Container(
-                    width: 60,
-                    alignment: Alignment.center,
-                    child: const Text('Favorite'),
+                    margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+                    child: const Tab(text: 'Favorite')
                   ),
                 ],
               ),
@@ -103,7 +111,7 @@ class _HistoryPageState extends State<HistoryPage>
           ),
         ),
       ),
-      backgroundColor: const Color(0xFFF9F6F1),
+      backgroundColor: const Color(0xFFEFE7DA),
       body: IndexedStack(
         index: _selectedBottomNavIndex,
         children: [
@@ -125,6 +133,7 @@ class _HistoryPageState extends State<HistoryPage>
       stream: FirebaseFirestore.instance
           .collection('books')
           .where('status', isEqualTo: 'Haven’t Read')
+          .where('user_id', isEqualTo: user_id)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -237,6 +246,7 @@ class _HistoryPageState extends State<HistoryPage>
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('books')
+          .where('user_id', isEqualTo: user_id)
           .where('status', whereIn: ['Finished', 'Reading']).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -348,6 +358,7 @@ class _HistoryPageState extends State<HistoryPage>
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('books')
+          .where('user_id', isEqualTo: user_id)
           .where('notes.isFavorite', isEqualTo: true)
           .snapshots(),
       builder: (context, snapshot) {
