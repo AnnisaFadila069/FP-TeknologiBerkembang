@@ -63,13 +63,15 @@ class _SearchPageState extends State<SearchPage> {
                   : ListView.builder(
                       itemCount: _filteredBooks.length,
                       itemBuilder: (context, index) {
-                        final book = _filteredBooks[index].data() as Map<String, dynamic>;
+                        final book = _filteredBooks[index].data()
+                            as Map<String, dynamic>;
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BookDetailPage(bookId: _filteredBooks[index].id),
+                                builder: (context) => BookDetailPage(
+                                    bookId: _filteredBooks[index].id),
                               ),
                             );
                           },
@@ -85,29 +87,34 @@ class _SearchPageState extends State<SearchPage> {
                                 children: [
                                   // Book Image
                                   Container(
-                                    width: 80,
-                                    height: 100,
+                                    width: 100,
+                                    height: 125,
+                                    margin: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
                                       color: Colors.grey[300],
                                       borderRadius: BorderRadius.circular(8.0),
-                                      image: book['image_url'] != null
+                                      image: book['imagePath'] != null &&
+                                              book['imagePath'].isNotEmpty
                                           ? DecorationImage(
-                                              image: NetworkImage(book['image_url']),
+                                              image: NetworkImage(
+                                                  book['imagePath']),
                                               fit: BoxFit.cover,
                                             )
                                           : null,
                                     ),
-                                    child: book['image_url'] == null
+                                    child: book['imagePath'] == null ||
+                                            book['imagePath'].isEmpty
                                         ? const Center(
-                                            child: Icon(Icons.book, size: 50, color: Colors.brown),
+                                            child: Icon(Icons.book,
+                                                size: 50, color: Colors.brown),
                                           )
                                         : null,
                                   ),
-                                  const SizedBox(width: 16.0),
                                   // Book Details
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           book['title'] ?? 'No Title',
@@ -121,7 +128,8 @@ class _SearchPageState extends State<SearchPage> {
                                         ),
                                         const SizedBox(height: 8.0),
                                         Text(
-                                          book['description'] ?? 'No Description',
+                                          book['description'] ??
+                                              'No Description',
                                           maxLines: 2,
                                           overflow: TextOverflow.ellipsis,
                                           style: const TextStyle(

@@ -50,7 +50,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   late String tempAuthor;
   late String tempPublisher;
   late String tempDescription;
-  late String tempCategory;
+  late String tempcategories;
   late String tempStatus;
 
   late TextEditingController _titleController;
@@ -62,7 +62,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   late String initialAuthor;
   late String initialPublisher;
   late String initialDescription;
-  late String initialCategory;
+  late String initialcategories;
   late String initialStatus;
 
   // Variabel untuk menyimpan notes
@@ -95,7 +95,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
   late TextEditingController notesEndDateController;
 
   bool isEditing = false;
-  String selectedCategory = 'Fiction';
+  String selectedcategories = 'Fiction';
   String selectedStatus = 'Haven’t Read';
   String imagePath = "";
 
@@ -108,7 +108,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
     tempAuthor = '';
     tempPublisher = '';
     tempDescription = '';
-    tempCategory = 'Fiction';
+    tempcategories = 'Fiction';
     tempStatus = 'Haven’t Read';
 
     // Inisialisasi TextEditingController
@@ -171,7 +171,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
           _authorController.text = cachedData['author'];
           _publisherController.text = cachedData['publisher'];
           _descriptionController.text = cachedData['description'];
-          selectedCategory = cachedData['category'] ?? 'Fiction';
+          selectedcategories = cachedData['categories'] ?? 'Fiction';
           selectedStatus = cachedData['status'] ?? 'Haven’t Read';
           imagePath = cachedData['imagePath'] ?? '';
         });
@@ -187,7 +187,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
           _authorController.text = data['author'] ?? '';
           _publisherController.text = data['publisher'] ?? '';
           _descriptionController.text = data['description'] ?? '';
-          selectedCategory = data['category'] ?? 'Fiction';
+          selectedcategories = data['categories'] ?? 'Fiction';
           selectedStatus = data['status'] ?? 'Haven’t Read';
           imagePath = data['imagePath'] ?? '';
 
@@ -196,7 +196,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
           tempAuthor = _authorController.text;
           tempPublisher = _publisherController.text;
           tempDescription = _descriptionController.text;
-          tempCategory = selectedCategory;
+          tempcategories = selectedcategories;
           tempStatus = selectedStatus;
 
           // Simpan data awal
@@ -204,7 +204,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
           initialAuthor = tempAuthor;
           initialPublisher = tempPublisher;
           initialDescription = tempDescription;
-          initialCategory = tempCategory;
+          initialcategories = tempcategories;
           initialStatus = tempStatus;
 
           // Data notes
@@ -416,7 +416,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
           ),
         ),
         Text(
-          'Categories: $initialCategory',
+          'Categories: $initialcategories',
           style: const TextStyle(
             fontFamily: 'BeVietnamPro',
             fontSize: 14,
@@ -692,10 +692,10 @@ class _BookDetailPageState extends State<BookDetailPage> {
             'Children’s Books',
             'Graphic Novels & Comics',
           ],
-          value: tempCategory,
+          value: tempcategories,
           onChanged: (value) {
             setState(() {
-              tempCategory = value!;
+              tempcategories = value!;
             });
           },
         ),
@@ -810,7 +810,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 tempAuthor = initialAuthor;
                 tempPublisher = initialPublisher;
                 tempDescription = initialDescription;
-                tempCategory = initialCategory;
+                tempcategories = initialcategories;
                 tempStatus = initialStatus;
 
                 // Rollback notes
@@ -853,7 +853,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       'author': tempAuthor,
       'publisher': tempPublisher,
       'description': tempDescription,
-      'categories': tempCategory,
+      'categories': tempcategories,
       'status': tempStatus,
       'imagePath': imagePath,
       'notes': {
@@ -875,7 +875,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       initialAuthor = tempAuthor;
       initialPublisher = tempPublisher;
       initialDescription = tempDescription;
-      initialCategory = tempCategory;
+      initialcategories = tempcategories;
       initialStatus = tempStatus;
 
       initialNotesStartDate = tempNotesStartDate;
