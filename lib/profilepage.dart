@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
-import 'package:fp_kelompok3/loginpage.dart';
+import 'main.dart';
 
 class ProfilePage extends StatefulWidget {
   final String username;
@@ -227,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     await _saveProfile();
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
+                      MaterialPageRoute(builder: (context) => MainPage()),
                       (Route<dynamic> route) => false,
                     );
                   },

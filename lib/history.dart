@@ -37,7 +37,7 @@ class _HistoryPageState extends State<HistoryPage>
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false, // Menghilangkan tombol back
-        backgroundColor: const Color(0xFFEFE7DA), // Warna latar AppBar
+        backgroundColor: const Color(0xFFF9F6F1), // Warna latar AppBar
         elevation: 0, // Hilangkan bayangan
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
