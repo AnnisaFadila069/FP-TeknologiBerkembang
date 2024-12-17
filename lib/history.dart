@@ -83,7 +83,7 @@ class _HistoryPageState extends State<HistoryPage>
               child: TabBar(
                 controller: _tabController,
                 indicator: BoxDecoration(
-                  color: Color(0xFFEFE7DA), // Warna untuk tab aktif
+                  color: Color(0xFFF9F6F1), // Warna untuk tab aktif
                   borderRadius: BorderRadius.circular(8),
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
@@ -111,7 +111,7 @@ class _HistoryPageState extends State<HistoryPage>
           ),
         ),
       ),
-      backgroundColor: const Color(0xFFEFE7DA),
+      backgroundColor: const Color(0xFFF9F6F1),
       body: IndexedStack(
         index: _selectedBottomNavIndex,
         children: [
