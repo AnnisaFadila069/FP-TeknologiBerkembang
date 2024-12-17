@@ -853,7 +853,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
       'author': tempAuthor,
       'publisher': tempPublisher,
       'description': tempDescription,
-      'categories': tempCategory,
+      'category': tempCategory,
       'status': tempStatus,
       'imagePath': imagePath,
       'notes': {
