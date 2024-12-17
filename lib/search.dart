@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'detail_edit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -155,7 +156,12 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _searchBooks(String query) async {
-    final books = await _firestore.collection('books').get();
+    final String currentUserId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    // Ambil buku yang sesuai dengan ID pengguna
+    final books = await _firestore
+      .collection('books')
+      .where('user_id', isEqualTo: currentUserId) // Filter berdasarkan userId
+      .get();
     final filteredBooks = books.docs.where((doc) {
       final title = (doc.data() as Map<String, dynamic>)['title'] ?? '';
       return title.toLowerCase().contains(query.toLowerCase());
