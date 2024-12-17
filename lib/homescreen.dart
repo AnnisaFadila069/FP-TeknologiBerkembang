@@ -7,7 +7,6 @@ import 'add_page.dart';
 import 'search.dart';
 import 'profilepage.dart';
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -18,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
 
   @override
   Widget build(BuildContext context) {
@@ -54,49 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(top: 12.0), // Menurunkan ikon
-=======
-          // Padding(
-          //   padding: const EdgeInsets.only(top: 12.0), // Menurunkan ikon
-          //   child: SizedBox(
-          //     width: 48,
-          //     height: 48,
-          //     child: IconButton(
-          //       icon: const Icon(Icons.person),
-          //       onPressed: () async {
-          //         final user = FirebaseAuth.instance.currentUser;
-          //         if (user != null) {
-          //           // Ambil data pengguna dari Firestore
-          //           final snapshot = await FirebaseFirestore.instance
-          //               .collection('users')
-          //               .doc(user.uid)
-          //               .get();
-          //           final userData = snapshot.data();
-
-          //           if (userData != null) {
-          //             Navigator.push(
-          //               context,
-          //               MaterialPageRoute(
-          //                 builder: (context) => ProfilePage(
-          //                   username: userData['fullName'] ?? 'Unknown',
-          //                   email: user.email ?? 'No Email',
-          //                 ),
-          //               ),
-          //             );
-          //           } else {
-          //             // Data pengguna tidak ditemukan
-          //             ScaffoldMessenger.of(context).showSnackBar(
-          //               const SnackBar(
-          //                   content: Text('Failed to load user data')),
-          //             );
-          //           }
-          //         }
-          //       },
-          //     ),
-          //   ),
-          // ),
-          // Ikon Logout
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0, top: 12.0),
             child: SizedBox(
               width: 48,
               height: 48,
@@ -134,6 +89,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
+          // Ikon Logout
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0, top: 12.0),
+            child: SizedBox(
+              width: 48,
+              height: 48,
+              child: IconButton(
                 icon: const Icon(Icons.logout,
                     size: 25, color: Color(0xFF6D4C41)),
                 onPressed: () {
