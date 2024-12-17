@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fp_kelompok3/detail_edit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -14,10 +16,14 @@ class _HistoryPageState extends State<HistoryPage>
   late TabController _tabController;
   final int _selectedBottomNavIndex = 0; // Untuk kontrol BottomNavigationBar
 
+  late String user_id;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    final user = FirebaseAuth.instance.currentUser;
+    user_id = user?.uid ?? ''; // Ambil userId dari user yang login
   }
 
   @override
@@ -127,6 +133,7 @@ class _HistoryPageState extends State<HistoryPage>
       stream: FirebaseFirestore.instance
           .collection('books')
           .where('status', isEqualTo: 'Haven’t Read')
+          .where('user_id', isEqualTo: user_id)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -239,6 +246,7 @@ class _HistoryPageState extends State<HistoryPage>
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('books')
+          .where('user_id', isEqualTo: user_id)
           .where('status', whereIn: ['Finished', 'Reading']).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -350,6 +358,7 @@ class _HistoryPageState extends State<HistoryPage>
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('books')
+          .where('user_id', isEqualTo: user_id)
           .where('notes.isFavorite', isEqualTo: true)
           .snapshots(),
       builder: (context, snapshot) {
